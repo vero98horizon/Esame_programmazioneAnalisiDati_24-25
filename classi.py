@@ -21,16 +21,49 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
-    def __init__(self, giorno:int, mese:int, anno:int=2025):
+    def __init__(self, giorno:int, mese:int, anno:int=2025):#TODO direi di togliere l'anno
         self._mese = None
-        self.anno = anno
+        #self._giorno = None      suggerisco di aggiungere anche questo nel caso chiamassero il test in maniera diversa e di aggiungere un controllo in set_giorno
+        self.anno = anno    #TODO direi di togliere l'anno
         self.set_mese(mese)
         self.set_giorno(giorno)
 
+    """Possiamo usare un metodo ausiliario per fare i controlli separatamente cosi da mantenere il principio che ogni funziona fa una cosa."""
+    """ 
+     def _controlla_valori(self, giorno, mese):
+
+            if not isinstance(giorno, int) or not isinstance(mese, int):
+                raise TypeError("Giorno e mese devono essere numeri interi.")
+            if mese < 1 or mese > 12:
+                raise ValueError("Il mese deve essere compreso tra 1 e 12.")
+            giorni_max = self.mappa_mesi[mese]
+            if giorno < 1 or giorno > giorni_max:
+                raise ValueError(f"Giorno non valido per il mese {mese}.")
+
+        def get_giorno(self):  #questi rimangono uguali 
+            return self._giorno
+
+        def set_giorno(self, valore):#qui aggiungiamo dei controlli cosi che se si cambia l'ordine dei test funziona comunque
+            if self._mese is None:
+                raise ValueError("Imposta prima il mese per poter validare il giorno.")
+            self._controlla_valori(valore, self._mese)
+            self._giorno = valore
+
+        def get_mese(self):#questi rimangono uguali 
+            return self._mese
+
+        def set_mese(self, valore):
+           
+            valore._
+            self._mese = valore
+            # Se il giorno è già stato impostato, validalo nuovamente con il nuovo mese
+            if self._giorno is not None:
+                self._controlla_valori(self._giorno, valore)
+                """
     #metodi getter e setter per giorno e mese
-    def get_giorno(self): 
+    def get_giorno(self):
         return self._giorno
-    
+
     def set_giorno(self, valore):
         #controllo che il giorno è un numero intero
         if not isinstance(valore, int):
@@ -50,6 +83,8 @@ class Data:
         if valore < 1 or valore > 12:
             raise ValueError("Il mese deve essere compreso tra 1 e 12")
         self._mese = valore
+
+        #per questi due metodi di set mese e set giorno propongo di fare una funzione a parte che controlli il tipo a parte
 
     #metodo per la rappresentazione in forma di stringa della data
     def __str__(self):
@@ -87,7 +122,7 @@ class Data:
     def __le__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) >= (other._mese, other._giorno) # ritorna un valore booleano
+        return (self._mese, self._giorno) >= (other._mese, other._giorno) # ritorna un valore booleano TODO è sbagliato il controllo di maggiore uguale dovrebbe essere minore uguale??
     
 """
 Definire una classe Prenotazione per rappresentare una prenotazione di una stanza di un hotel.
