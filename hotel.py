@@ -21,22 +21,22 @@ Inserisce una nuova stanza nell'hotel.
 """      
 class Hotel:
     def __init__(self):
-        self.stanze = {}
+        self.stanze = {}    #todo qua dovremmo mettere dei dati di default nel caso non si carichi il file o se è vuoto
         self.prenotazioni = {}
-        self.id_prenotazioni = 1
+        self.id_prenotazioni = 0 #todo qua dovremmo mettere 0 nel caso non ci fossero dati nel file
 
     def __eq__(self, other):
-        return self.stanze == other.stanze and self.prenotazioni == other.prenotazioni and self.id_prenotazioni == other.id_prenotazioni
+        return self.stanze == other.stanze and self.prenotazioni == other.prenotazioni and self.id_prenotazioni == other.id_prenotazioni #todo non dovremmo fare il controllo con i dati contenuti nel file  hotel_base.txt?
 
     def __str__(self):
-        return f"Hotel: {len(self.stanze)} stanze, {len(self.prenotazioni)} prenotazioni."
+        return f"Hotel: {len(self.stanze)} stanze, {len(self.prenotazioni)} prenotazioni." #todo non dovremmo andare a prendere i dati dal file hotel_base.txt facendo un ciclo for o una regex?
     
-def aggiungi_stanza(self, stanza):
-    if type(stanza) != Stanza:
+def aggiungi_stanza(self, stanza):  #todo qui immagino che il metodo debba essere aggiunto alla classe Hotel ma messo cosi è esterno (per identazione) cosi come anche tutti gli altri metodi
+    if type(stanza) != Stanza: #todo potremmo fare cosi? isinstance(stanza, Stanza) perchè se si passa una sottoclasse di Stanza non funziona. Tipo se gli passiamo Suit da errore anche se dovrebbe funzionare
         raise TypeError("La stanza deve essere un oggetto di tipo Stanza")
     if stanza.get_numero_stanza() in self.stanze:
         raise ValueError("La stanza è già presente nell'hotel")
-    self.stanze[stanza.get_numero_stanza()] = stanza
+    self.stanze[stanza.get_numero_stanza()] = stanza #todo non dobbiamo aggiungere al file la nuova stanza?
 
 
 """
@@ -53,8 +53,8 @@ Crea un oggetto Prenotazione con id_prenotazioni e i parametri in ingresso, e lo
 :raise KeyError: se la stanza non è presente nell'hotel
 """
 def prenota(self, numero_stanza, data_arrivo, data_partenza, nome_cliente, numero_persone):
-    if type(data_arrivo) != Data or type(data_partenza) != Data:
-        raise TypeError("Le date devono essere oggetti di tipo Data")
+    if type(data_arrivo) != Data or type(data_partenza) != Data: #todo qui pure meglio istanceof secondo me
+        raise TypeError("Le date devono essere oggetti di tipo Data") #todo qui uguale alle altre situazioni degli errori, possiamo fare una funzione che prende in input il valore e il tipo che ci serve e lancia da solo l'errore sempre per ridurre ridondanza
     if type(nome_cliente) != str:
         raise TypeError("Il nome del cliente deve essere una stringa")
     if type(numero_persone) != int:
@@ -69,13 +69,13 @@ def prenota(self, numero_stanza, data_arrivo, data_partenza, nome_cliente, numer
     self.prenotazioni[self.id_prenotazioni] = prenotazione
     self.id_prenotazioni += 1
     return self.id_prenotazioni - 1
-
+#todo qua è da rifare la logica siccome lo dobbiamo caricare nel txt, dobbiamo inserire nella logica le funzioni di controllo create in Prenotazione e poi fare un altra funzione per controllare se la stanza in quelle data è disponibile e se il numero di persone è adatto per contenerle.
 """
 Disdice una prenotazione dell'hotel.
 :param indice della prenotazione da disdire
 :raise KeyError: se la prenotazione non è presente nell'hotel
 """    
-def disdici(self, indice):
+def disdici(self, indice):  #todo qua è da rifare in funzione per il txt, facciamo passare al metodo un id e poi controlliamo se esiste e poi si elimina dal file.
     if indice not in self.prenotazioni:
         raise KeyError("La prenotazione non è presente nell'hotel")
     del self.prenotazioni[indice]
@@ -85,7 +85,7 @@ Rimuove una stanza dall'hotel e tutte le prenotazioni relative a quella stanza.
 :param numero_stanza: numero della stanza da rimuovere
 :raise KeyError: se la stanza non è presente nell'hotel
 """
-def rimuovi_stanza(self, numero_stanza):
+def rimuovi_stanza(self, numero_stanza):    #todo questo è da rifare da capo  siccome dobbiamo andare a modificare il file e non solo la variabile in ram
     if numero_stanza not in self.stanze:
         raise KeyError("La stanza non è presente nell'hotel")
     for prenotazione in list(self.prenotazioni.values()):
@@ -204,9 +204,9 @@ Restituisce la lista delle stanze dell'hotel sopra un prezzo specifico fra due d
 def get_stanze_sopra_prezzo(self, numero_notti, prezzo):
     numero_notti = int(numero_notti)
     prezzo = float(prezzo)
-    if type(numero_notti) != int:
+    if type(numero_notti) != int: #todo questo controllo secondo me è inutile siccome stiamo trasformando 2 righe sopra il numero notti in int in automatico.
         raise TypeError("Il numero di notti deve essere un intero")
-    if type(prezzo) != float:
+    if type(prezzo) != float:   #todo stesso discorso di sopra
         raise TypeError("Il prezzo deve essere un numero con virgola")
     if prezzo <= 1:
         raise ValueError("Il prezzo deve essere maggiore di 1")

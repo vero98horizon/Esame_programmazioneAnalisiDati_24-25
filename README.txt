@@ -49,7 +49,7 @@ Dopo aver implementato ciascuna classe in questo ordine è possibile usare main.
 parzialmente il funzionamento delle classi implementate.
 
 Conviene realizzare le funzioni richieste seguendo le specifiche nei commenti e
-analizzando la struttura dei test del file main.py che usano un aversione aggiornata 
+analizzando la struttura dei test del file main.py che usano una versione aggiornata
 della testEqual() usata durante il corso e disponibile in testMy.py.
 Durante lo sviluppo e' consigliato non usare immediatamente i test in main.py
 per non avere risultati complessi e di difficile interpretazione. Consigliamo invece

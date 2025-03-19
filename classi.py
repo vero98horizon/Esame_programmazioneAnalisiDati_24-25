@@ -22,52 +22,21 @@ class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
     def __init__(self, giorno:int, mese:int, anno:int=2025):#TODO direi di togliere l'anno
-        self._mese = None
-        #self._giorno = None      suggerisco di aggiungere anche questo nel caso chiamassero il test in maniera diversa e di aggiungere un controllo in set_giorno
+        self._mese = None  # todo questa è fatta ad hoc per il test, non so se va fatto cosi o se deve essere fatto piu generico, dovremmo chiedere o dimmi tu
+        #self._giorno = None   ad esempio suggerisco di aggiungere anche questo nel caso chiamassero il test in maniera diversa e di aggiungere un controllo in set_giorno
         self.anno = anno    #TODO direi di togliere l'anno
         self.set_mese(mese)
         self.set_giorno(giorno)
-
-    """Possiamo usare un metodo ausiliario per fare i controlli separatamente cosi da mantenere il principio che ogni funziona fa una cosa."""
-    """ 
-     def _controlla_valori(self, giorno, mese):
-
-            if not isinstance(giorno, int) or not isinstance(mese, int):
-                raise TypeError("Giorno e mese devono essere numeri interi.")
-            if mese < 1 or mese > 12:
-                raise ValueError("Il mese deve essere compreso tra 1 e 12.")
-            giorni_max = self.mappa_mesi[mese]
-            if giorno < 1 or giorno > giorni_max:
-                raise ValueError(f"Giorno non valido per il mese {mese}.")
-
-        def get_giorno(self):  #questi rimangono uguali 
-            return self._giorno
-
-        def set_giorno(self, valore):#qui aggiungiamo dei controlli cosi che se si cambia l'ordine dei test funziona comunque
-            if self._mese is None:
-                raise ValueError("Imposta prima il mese per poter validare il giorno.")
-            self._controlla_valori(valore, self._mese)
-            self._giorno = valore
-
-        def get_mese(self):#questi rimangono uguali 
-            return self._mese
-
-        def set_mese(self, valore):
-           
-            valore._
-            self._mese = valore
-            # Se il giorno è già stato impostato, validalo nuovamente con il nuovo mese
-            if self._giorno is not None:
-                self._controlla_valori(self._giorno, valore)
-                """
     #metodi getter e setter per giorno e mese
+    #todo perchè qui facciamo in questo modo e poi piu avanti con i param? non è meglio fare in un modo solo per consistenza?
     def get_giorno(self):
         return self._giorno
 
     def set_giorno(self, valore):
         #controllo che il giorno è un numero intero
         if not isinstance(valore, int):
-            raise TypeError("Il giorno deve restituire un numero intero")
+            raise TypeError("Il giorno deve restituire un numero intero")  # TODO viene usato un sacco di volte questo controllo quindi potremmo fare un metodo da chiamare cosi da evitare ridondanza, magari aggiungiamo una flag per il caso in cui deve essere anche maggiore di 0
+
         #controllo che il valore del giorno sia compreso tra 1 e il numero di giorni del mese
         if valore < 1 or valore > self.mappa_mesi.get(self._mese, 31):
             raise ValueError(f"Giorno non valido per il mese {self._mese}")
@@ -85,7 +54,7 @@ class Data:
         self._mese = valore
 
         #per questi due metodi di set mese e set giorno propongo di fare una funzione a parte che controlli il tipo a parte
-
+    #todo i nomi di queste funzioni non sono molto chiari cosi, perchè si fa l'override? non ha piu senso dare dei nomi chiari alle funzioni cosi poi quando le usiamo sappiamo cosa chiamare?
     #metodo per la rappresentazione in forma di stringa della data
     def __str__(self):
         return f"{self._giorno}/{self._mese}/{self.anno}"
@@ -93,7 +62,9 @@ class Data:
     #metodo per il calcolo della differenza in giorni tra due date
     def __sub__(self, other):
         if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")  #todo discorso uguale a prima, facciamo una funzione che ci chiama questo errore per ridurre ridondanza
+        #todo qua serve un controllo che la differenza dei giorni sia maggiore di 0 altrimenti deve sollevare un errore, magari possiamo chiamare qua dentro la funzione  __eq__ cosi se i giorni sono gli stessi non fa neanche il calcolo
+
         # Calcola il numero totale di giorni dall'inizio dell'anno per ciascuna data
         giorni_self = sum(self.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno # generator expression per sommare i giorni di tutti i mesi precedenti riferiti alla data self (d1)
         giorni_other = sum(self.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno # generator expression per sommare i giorni di tutti i mesi precedenti riferiti alla data other (d2)
@@ -110,19 +81,19 @@ class Data:
     def __lt__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano
+        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano #TODO qua non dovrebbbe essere > invece di <?
     
     #metodo per il confronto di min
     def __gt__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
         return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano
-    
+    #todo questo metodo sopra non dovrebbe dare il valore minimo tra i due e il metodo sopra ancora il maggiore??
     #metodo per il confronto di minore o uguale tra due date
     def __le__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) >= (other._mese, other._giorno) # ritorna un valore booleano TODO è sbagliato il controllo di maggiore uguale dovrebbe essere minore uguale??
+        return (self._mese, self._giorno) >= (other._mese, other._giorno) # ritorna un valore booleano #TODO qua non dovrebbbe essere <= invece di >=? e stesso discorso di sopra per il return della data minore
     
 """
 Definire una classe Prenotazione per rappresentare una prenotazione di una stanza di un hotel.
@@ -143,12 +114,12 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
 """
 #cercare i metodi per il confronto di uguaglianza profonda o no
-class Prenotazione:
+class Prenotazione:         #todo non è stata considerato questo punto presente nellle linee guida: "Non si considerano date a cavallo della fine dell’anno, ad esempio: arrivo 31/12 partenza 1/1"
     id_counter = 1
 
     def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="", numero_persone=0):
         if id_prenotazione is None:
-            self.id_prenotazione = Prenotazione.id_counter
+            self.id_prenotazione = Prenotazione.id_counter  #todo qua dovremmo andare a vedere nel file l'id presente, magari si fa una funzione a parte
             Prenotazione.id_counter += 1
         else:
             if not isinstance(id_prenotazione, int) or id_prenotazione < 0:
@@ -160,6 +131,7 @@ class Prenotazione:
         self.data_partenza = data_partenza
         self.nome_cliente = nome_cliente
         self.numero_persone = numero_persone
+#- Metodi getter e setter per il numero della stanza, la data di arrivo, la data di partenza, il nome del cliente e il numero di persone.
 
     @property
     def id_prenotazione(self):
@@ -199,7 +171,7 @@ class Prenotazione:
     def data_partenza(self):
         return self._data_partenza
 
-    @data_partenza.setter
+    @data_partenza.setter   #todo qua dovremmo aggiungere un controllo per vedere se la data di arrivo è stata inserita prima della data di partenza forse?
     def data_partenza(self, value):
         if not isinstance(value, Data):
             raise TypeError("La data di partenza deve essere un oggetto di tipo Data.")
@@ -217,7 +189,7 @@ class Prenotazione:
     def nome_cliente(self, value):
         if not isinstance(value, str):
             raise TypeError("Il nome del cliente deve essere una stringa.")
-        if not value.strip():
+        if not value.strip(): #todo qua aggiungiamo un controllo con una regex di qualche genere per vedere se il nome è composto da lettere,comincia per maiuscola e di lunghezza minima e massima di qualche genere.
             raise ValueError("Il nome del cliente deve essere una stringa non vuota.")
         self._nome_cliente = value
 
@@ -233,10 +205,13 @@ class Prenotazione:
             raise ValueError("Il numero di persone deve essere un intero positivo.")
         self._numero_persone = value
 
+    #- Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
+
     def __str__(self):
         persone_str = "persona" if self.numero_persone == 1 else "persone"
         return f"Prenotazione {self.id_prenotazione} per stanza {self.numero_stanza} da {self.data_arrivo.get_giorno()}/{self.data_arrivo.get_mese()} a {self.data_partenza.get_giorno()}/{self.data_partenza.get_mese()} a nome {self.nome_cliente} per {self.numero_persone} {persone_str}"
 
+    #- Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
     def __eq__(self, other):
         if not isinstance(other, Prenotazione):
             return False
@@ -246,5 +221,5 @@ class Prenotazione:
             self.data_partenza == other.data_partenza and
             self.nome_cliente == other.nome_cliente and
             self.numero_persone == other.numero_persone
-        )
+        )#todo questo metodo potrebbe restituire qualcosa di diverso da un booleano, magari un messaggio dove ci sta la descrizione delle uguaglianzee o delle differenze e poi credo che dobbiamo passare gli id delle prenotazioni presenti nel file txt. quindi penso sia da rifare questo qui
 

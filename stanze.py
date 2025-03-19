@@ -19,11 +19,11 @@ class Stanza:
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)
         self.set_prezzo_base(prezzo_base)
-
+#todo usiamo @param magari per tutti i metodi che ci servono?
     def get_numero_stanza(self):
         return self.numero_stanza
     
-    def set_numero_stanza(self, numero_stanza):
+    def set_numero_stanza(self, numero_stanza):#todo aggiungere logica per il txt
         if type(numero_stanza) != int:
             raise TypeError("Il numero della stanza deve essere un intero")
         if numero_stanza <= 0:
@@ -33,7 +33,7 @@ class Stanza:
     def get_posti(self):
         return self.posti
     
-    def set_posti(self, posti):
+    def set_posti(self, posti):#todo aggiungere logica per il txt
         if type(posti) != int:
             raise TypeError("Il numero di posti deve essere un intero")
         if posti <= 0:
@@ -43,7 +43,7 @@ class Stanza:
     def get_prezzo_base(self):
         return self.prezzo_base
     
-    def set_prezzo_base(self, prezzo_base):
+    def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
         if type(prezzo_base) != float:
             raise TypeError("Il prezzo base deve essere un numero con virgola")
         if prezzo_base <= 1:
@@ -57,13 +57,13 @@ class Stanza:
             raise ValueError("Il numero di notti deve essere un intero positivo")
         return self.prezzo_base * numero_notti
     
-    def __str__(self):
+    def __str__(self):#todo cambiare nome metodo questo e quello dopo
         return f"{self.numero_stanza}, {self.posti} posti"
     
     def __eq__(self, other):
         return self.numero_stanza == other.numero_stanza and self.posti == other.posti
     
-    def get_tipo_stanza(self):
+    def get_tipo_stanza(self):#todo da finire
         return "Stanza"
     
 """
@@ -98,10 +98,9 @@ Definire una classe Doppia che estende Stanza e rappresenta una stanza doppia di
 - Metodo per il confronto di uguaglianza profonda tra due stanze doppie.
 - Metodo get_tipo_stanza che restituisce il nome della classe. 
 """
-
 class Suite(Stanza):
     def __init__(self, numero_stanza, posti, extra, prezzo_base):
-        if posti < 4:
+        if posti < 4:       #todo manca controllo  se è 0, e servono dei valori di default per extra che deve essere una lista di stringhe
             raise ValueError("Una suite deve avere almeno 4 posti")
         super().__init__(numero_stanza, posti, prezzo_base)
         self.set_extra(extra)
