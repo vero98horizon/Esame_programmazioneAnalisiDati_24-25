@@ -1,0 +1,182 @@
+Index: stanze.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from classi import Data\n\"\"\"\nDefinire una classe Stanza che rappresenta una stanza di un hotel.\n#STATO:\n- numero_stanza: intero positivo.\n- posti: intero positivo.\n- prezzo_base: numero con virgola maggiore di 1.\nOgni volta che si modifica una di queste variabili di istanza, devono essere controllati tipo e valori e sollevate opportune eccezioni ValueError o TypeError se i parametri non sono validi.\n#METODI:\n- Costruttore che prende in input il numero della stanza, il numero di posti e il prezzo base. Esempio di utilizzo: s = Stanza(101, 2, 50.0)\n- Metodi getter e setter per il numero della stanza, il numero di posti e il prezzo base.\n- Metodo calcola_prezzo che prende in input l'intero numero_notti e restituisce il prezzo della stanza per il periodo indicato. Il prezzo della stanza è dato dal prezzo base moltiplicato per il numero di notti di permanenza.\n- Metodo per la rappresentazione in forma di stringa della stanza, rispettando il formato di esempio: \"101, 2 posti\" dove 101 è il numero della stanza e 2 il numero di posti.\n- Metodo per il confronto di uguaglianza profonda tra due stanze.\n- Metodo get_tipo_stanza che restituisce il nome della classe. Esempio di utilizzo: s.get_tipo_stanza() restituisce \"Stanza\"\n\"\"\"\nclass Stanza:\n    def __init__(self, numero_stanza, posti, prezzo_base):\n        self.set_numero_stanza(numero_stanza)\n        self.set_posti(posti)\n        self.set_prezzo_base(prezzo_base)\n\n    def get_numero_stanza(self):\n        return self.numero_stanza\n    \n    def set_numero_stanza(self, numero_stanza):\n        if type(numero_stanza) != int:\n            raise TypeError(\"Il numero della stanza deve essere un intero\")\n        if numero_stanza <= 0:\n            raise ValueError(\"Il numero della stanza deve essere un intero positivo\")\n        self.numero_stanza = numero_stanza\n\n    def get_posti(self):\n        return self.posti\n    \n    def set_posti(self, posti):\n        if type(posti) != int:\n            raise TypeError(\"Il numero di posti deve essere un intero\")\n        if posti <= 0:\n            raise ValueError(\"Il numero di posti deve essere un intero positivo\")\n        self.posti = posti\n\n    def get_prezzo_base(self):\n        return self.prezzo_base\n    \n    def set_prezzo_base(self, prezzo_base):\n        if type(prezzo_base) != float:\n            raise TypeError(\"Il prezzo base deve essere un numero con virgola\")\n        if prezzo_base <= 1:\n            raise ValueError(\"Il prezzo base deve essere maggiore di 1\")\n        self.prezzo_base = prezzo_base\n\n    def calcola_prezzo(self, numero_notti):\n        if type(numero_notti) != int:\n            raise TypeError(\"Il numero di notti deve essere un intero\")\n        if numero_notti < 0:\n            raise ValueError(\"Il numero di notti deve essere un intero positivo\")\n        return self.prezzo_base * numero_notti\n    \n    def __str__(self):\n        return f\"{self.numero_stanza}, {self.posti} posti\"\n    \n    def __eq__(self, other):\n        return self.numero_stanza == other.numero_stanza and self.posti == other.posti\n    \n    def get_tipo_stanza(self):\n        return \"Stanza\"\n    \n\"\"\"\nDefinire una classe Suite che estende Stanza e rappresenta una suite di un hotel. Una suite è una stanza con almeno 4 posti e con una lista di extra.\n#STATO:\n- extra: lista di stringhe.\nOgni volta che si modifica questa variabile devono essere controllati tipo e valori e sollevate opportune eccezioni ValueError o TypeError in casi errati.\n#METODI:\n- Costruttore che prende in input il numero della stanza, il numero di posti, la lista di extra e il prezzo base, e inizializza le variabili ereditate. Esempio di utilizzo: s = Suite(102, 4, [\"TV\", \"WiFi\", \"Jacuzzi\"], 200.0)\n- Metodi getter e setter per la lista di extra.\n- Metodo calcola_prezzo che prende in input l'intero numero_notti e calcola il prezzo della stanza per il periodo indicato. Il prezzo di una notte per una suite è dato dal prezzo base maggiorato del 50% più 10 euro per ogni extra.\n- Metodo per la rappresentazione in forma di stringa della suite. Rispettando il formato di esempio: \"Suite 102, 4 posti, con TV, WiFi e Jacuzzi\"\n- Metodo per il confronto di uguaglianza profonda tra due suite.\n- Metodo get_tipo_stanza che restituisce il nome della classe. Esempio di utilizzo: s.get_tipo_stanza() restituisce \"Suite\"\n\"\"\"\n\n\"\"\"\nDefinire una classe Singola che estende Stanza e rappresenta una stanza singola di un hotel. Una stanza singola è una stanza con un solo posto.\n#METODI:\n- Costruttore che prende in input il numero della stanza e il prezzo base, e inizializza opportunamente le variabili ereditate. Esempio di utilizzo: s = Singola(103, 40.0)\n- Metodo per la rappresentazione in forma di stringa della stanza. Rispettando il formato di esempio: \"Singola 103, 1 posto\"\n- Metodo per il confronto di uguaglianza profonda tra due stanze singole.\n- Metodo get_tipo_stanza che restituisce il nome della classe. \n\"\"\"\n\n\"\"\"\nDefinire una classe Doppia che estende Stanza e rappresenta una stanza doppia di un hotel. Una stanza doppia è una stanza con due posti.\n#METODI:\n- Costruttore che prende in input il numero della stanza e il prezzo base, e inizializza opportunamente le variabili ereditate. Esempio di utilizzo: s = Doppia(104, 60.0)\n- Metodo per la rappresentazione in forma di stringa della stanza. Rispettando il formato di esempio: \"Doppia 104, 2 posti\"\n- Metodo calcola_prezzo che prende in input l'intero  numero_notti e calcola il prezzo della stanza per il periodo indicato. Il prezzo di una notte per una doppia è dato dal prezzo base maggiorato del 20%.\n- Metodo per il confronto di uguaglianza profonda tra due stanze doppie.\n- Metodo get_tipo_stanza che restituisce il nome della classe. \n\"\"\"\n\nclass Suite(Stanza):\n    def __init__(self, numero_stanza, posti, extra, prezzo_base):\n        if posti < 4:\n            raise ValueError(\"Una suite deve avere almeno 4 posti\")\n        super().__init__(numero_stanza, posti, prezzo_base)\n        self.set_extra(extra)\n\n    def get_extra(self):\n        return self.extra\n    \n    def set_extra(self, extra):\n        if type(extra) != list:\n            raise TypeError(\"Gli extra devono essere una lista\")\n        for e in extra:\n            if type(e) != str:\n                raise TypeError(\"Gli extra devono essere delle stringhe\")\n        self.extra = extra\n\n    def calcola_prezzo(self, numero_notti):\n        if type(numero_notti) != int:\n            raise TypeError(\"Il numero di notti deve essere un intero\")\n        if numero_notti < 0:\n            raise ValueError(\"Il numero di notti deve essere un intero positivo\")\n        return self.prezzo_base * numero_notti * 1.5 + 10 * len(self.extra)\n    \n    def __str__(self):\n        return f\"Suite {self.numero_stanza}, {self.posti} posti, con {', '.join(self.extra)}\"\n    \n    def __eq__(self, other):\n        return super().__eq__(other) and self.extra == other.extra\n    def get_tipo_stanza(self):\n        return \"Suite\"\n    \nclass Singola(Stanza):\n    def __init__(self, numero_stanza, prezzo_base):\n        super().__init__(numero_stanza, 1, prezzo_base)\n\n    def __str__(self):\n        return f\"Singola {self.numero_stanza}, 1 posto\"\n    \n    def __eq__(self, other):\n        super().__eq__(other)\n    \n    def get_tipo_stanza(self):\n        return \"Singola\"\n    \nclass Doppia(Stanza):\n    def __init__(self, numero_stanza, prezzo_base):\n        super().__init__(numero_stanza, 2, prezzo_base)\n\n    def calcola_prezzo(self, numero_notti):\n        return self.prezzo_base * 1.2 * numero_notti\n    \n    def __str__(self):\n        return f\"Doppia {self.numero_stanza}, 2 posti\"\n    \n    def __eq__(self, other):\n        return super().__eq__(other)\n    \n    def get_tipo_stanza(self):\n        return \"Doppia\"\n    \n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/stanze.py b/stanze.py
+--- a/stanze.py	(revision 8cda3acf34654806237b28c4028f860a04d66c01)
++++ b/stanze.py	(date 1742503319908)
+@@ -19,11 +19,11 @@
+         self.set_numero_stanza(numero_stanza)
+         self.set_posti(posti)
+         self.set_prezzo_base(prezzo_base)
+-
++#todo usiamo @param magari per tutti i metodi che ci servono?
+     def get_numero_stanza(self):
+         return self.numero_stanza
+     
+-    def set_numero_stanza(self, numero_stanza):
++    def set_numero_stanza(self, numero_stanza):#todo aggiungere logica per il txt
+         if type(numero_stanza) != int:
+             raise TypeError("Il numero della stanza deve essere un intero")
+         if numero_stanza <= 0:
+@@ -33,7 +33,7 @@
+     def get_posti(self):
+         return self.posti
+     
+-    def set_posti(self, posti):
++    def set_posti(self, posti):#todo aggiungere logica per il txt
+         if type(posti) != int:
+             raise TypeError("Il numero di posti deve essere un intero")
+         if posti <= 0:
+@@ -43,7 +43,7 @@
+     def get_prezzo_base(self):
+         return self.prezzo_base
+     
+-    def set_prezzo_base(self, prezzo_base):
++    def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
+         if type(prezzo_base) != float:
+             raise TypeError("Il prezzo base deve essere un numero con virgola")
+         if prezzo_base <= 1:
+@@ -57,13 +57,13 @@
+             raise ValueError("Il numero di notti deve essere un intero positivo")
+         return self.prezzo_base * numero_notti
+     
+-    def __str__(self):
++    def __str__(self):#todo cambiare nome metodo questo e quello dopo
+         return f"{self.numero_stanza}, {self.posti} posti"
+     
+     def __eq__(self, other):
+         return self.numero_stanza == other.numero_stanza and self.posti == other.posti
+     
+-    def get_tipo_stanza(self):
++    def get_tipo_stanza(self):#todo da finire
+         return "Stanza"
+     
+ """
+@@ -98,10 +98,9 @@
+ - Metodo per il confronto di uguaglianza profonda tra due stanze doppie.
+ - Metodo get_tipo_stanza che restituisce il nome della classe. 
+ """
+-
+ class Suite(Stanza):
+     def __init__(self, numero_stanza, posti, extra, prezzo_base):
+-        if posti < 4:
++        if posti < 4:       #todo manca controllo  se è 0, e servono dei valori di default per extra che deve essere una lista di stringhe
+             raise ValueError("Una suite deve avere almeno 4 posti")
+         super().__init__(numero_stanza, posti, prezzo_base)
+         self.set_extra(extra)
+Index: .idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	(date 1742503319898)
++++ b/.idea/inspectionProfiles/profiles_settings.xml	(date 1742503319898)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1742503319899)
++++ b/.idea/misc.xml	(date 1742503319899)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Black">
++    <option name="sdkName" value="Python 3.12" />
++  </component>
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12" project-jdk-type="Python SDK" />
++</project>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1742503319901)
++++ b/.idea/vcs.xml	(date 1742503319901)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1742503319894)
++++ b/.idea/.gitignore	(date 1742503319894)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/Esame_programmazioneAnalisiDati_24-25.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/Esame_programmazioneAnalisiDati_24-25.iml b/.idea/Esame_programmazioneAnalisiDati_24-25.iml
+new file mode 100644
+--- /dev/null	(date 1742503319896)
++++ b/.idea/Esame_programmazioneAnalisiDati_24-25.iml	(date 1742503319896)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="jdk" jdkName="Python 3.12" jdkType="Python SDK" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++  <component name="PyDocumentationSettings">
++    <option name="format" value="PLAIN" />
++    <option name="myDocStringFormat" value="Plain" />
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1742503319899)
++++ b/.idea/modules.xml	(date 1742503319899)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/Esame_programmazioneAnalisiDati_24-25.iml" filepath="$PROJECT_DIR$/.idea/Esame_programmazioneAnalisiDati_24-25.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
