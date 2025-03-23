@@ -21,19 +21,21 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
-    def __init__(self, giorno:int, mese:int, anno:int=2025):#TODO direi di togliere l'anno
-        self._mese = None  # todo questa è fatta ad hoc per il test, non so se va fatto cosi o se deve essere fatto piu generico, dovremmo chiedere o dimmi tu
-        #self._giorno = None   ad esempio suggerisco di aggiungere anche questo nel caso chiamassero il test in maniera diversa e di aggiungere un controllo in set_giorno
-        self.anno = anno    #TODO direi di togliere l'anno
+    def __init__(self, giorno:int, mese:int, ):
+        self._mese = None 
+        self._giorno = None   
         self.set_mese(mese)
         self.set_giorno(giorno)
     #metodi getter e setter per giorno e mese
     #todo perchè qui facciamo in questo modo e poi piu avanti con i param? non è meglio fare in un modo solo per consistenza?
+    @property
     def get_giorno(self):
         return self._giorno
 
+    @set_giorno.setter
     def set_giorno(self, valore):
         #controllo che il giorno è un numero intero
+        gestione_errori(valore,int,0,self.mappa_mesi.get(self._mese, 31)+1)
         if not isinstance(valore, int):
             raise TypeError("Il giorno deve restituire un numero intero")  # TODO viene usato un sacco di volte questo controllo quindi potremmo fare un metodo da chiamare cosi da evitare ridondanza, magari aggiungiamo una flag per il caso in cui deve essere anche maggiore di 0
 
@@ -222,4 +224,16 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
             self.nome_cliente == other.nome_cliente and
             self.numero_persone == other.numero_persone
         )#todo questo metodo potrebbe restituire qualcosa di diverso da un booleano, magari un messaggio dove ci sta la descrizione delle uguaglianzee o delle differenze e poi credo che dobbiamo passare gli id delle prenotazioni presenti nel file txt. quindi penso sia da rifare questo qui
+
+def gestione_errori(data, tipo_dato, min=None, max=None):
+    if not isinstance(data, tipo_dato):
+        raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
+
+    if min is not None:
+        if data < min:
+            raise ValueError(f"Il valore deve essere maggiore  a {min}.")
+
+    if max is not None:
+        if data > max:
+            raise ValueError(f"Il valore deve essere minore a {max}.")
 
