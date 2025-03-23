@@ -29,50 +29,40 @@ class Data:
     #metodi getter e setter per giorno e mese
     #todo perchè qui facciamo in questo modo e poi piu avanti con i param? non è meglio fare in un modo solo per consistenza?
     @property
-    def get_giorno(self):
+    def giorno(self):
         return self._giorno
 
-    @set_giorno.setter
-    def set_giorno(self, valore):
-        #controllo che il giorno è un numero intero
-        gestione_errori(valore,int,0,self.mappa_mesi.get(self._mese, 31)+1)
-        if not isinstance(valore, int):
-            raise TypeError("Il giorno deve restituire un numero intero")  # TODO viene usato un sacco di volte questo controllo quindi potremmo fare un metodo da chiamare cosi da evitare ridondanza, magari aggiungiamo una flag per il caso in cui deve essere anche maggiore di 0
-
-        #controllo che il valore del giorno sia compreso tra 1 e il numero di giorni del mese
-        if valore < 1 or valore > self.mappa_mesi.get(self._mese, 31):
-            raise ValueError(f"Giorno non valido per il mese {self._mese}")
+    @giorno.setter
+    def giorno(self, valore):
+        #controllo che il mese sia stato impostato
+        if get_mese is None:
+            raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
+        # Recupero il numero massimo di giorni nel mese
+        giorni_max = self.mappa_mesi.get(self._mese)
+        gestione_errori(valore,int,0,giorni_max+1)  
         self._giorno = valore
 
-    def get_mese(self):
+    @property
+    def mese(self):
         return self._mese
-    
-    def set_mese(self, valore):
-        #controllo che il mese sia un intero
-        if not isinstance(valore, int):
-            raise TypeError("Il mese deve restituire un numero intero")
-        if valore < 1 or valore > 12:
-            raise ValueError("Il mese deve essere compreso tra 1 e 12")
-        self._mese = valore
 
-        #per questi due metodi di set mese e set giorno propongo di fare una funzione a parte che controlli il tipo a parte
-    #todo i nomi di queste funzioni non sono molto chiari cosi, perchè si fa l'override? non ha piu senso dare dei nomi chiari alle funzioni cosi poi quando le usiamo sappiamo cosa chiamare?
+    @mese.setter
+    def mese(self, valore):
+        gestione_errori(valore,int,0,13)
+        self._mese = valore  
     #metodo per la rappresentazione in forma di stringa della data
-    def __str__(self):
-        return f"{self._giorno}/{self._mese}/{self.anno}"
+    def data_in_stringa(self):
+        return f"{self._giorno}/{self._mese}/2025"
     
     #metodo per il calcolo della differenza in giorni tra due date
     def __sub__(self, other):
         if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")  #todo discorso uguale a prima, facciamo una funzione che ci chiama questo errore per ridurre ridondanza
-        #todo qua serve un controllo che la differenza dei giorni sia maggiore di 0 altrimenti deve sollevare un errore, magari possiamo chiamare qua dentro la funzione  __eq__ cosi se i giorni sono gli stessi non fa neanche il calcolo
+            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+        # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
+        giorni_self = sum(Data.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno
+        giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
+        return abs(giorni_self - giorni_other)
 
-        # Calcola il numero totale di giorni dall'inizio dell'anno per ciascuna data
-        giorni_self = sum(self.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno # generator expression per sommare i giorni di tutti i mesi precedenti riferiti alla data self (d1)
-        giorni_other = sum(self.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno # generator expression per sommare i giorni di tutti i mesi precedenti riferiti alla data other (d2)
-        # Calcola la differenza in valore assoluto tra i due numeri di giorni
-        return abs(giorni_self - giorni_other) # ritorna il valore assoluto della differenza tra i due numeri di giorni
-    
     #metodo per il confronto di uguaglianza tra due date
     def __eq__(self, other):
         if not isinstance(other, Data):

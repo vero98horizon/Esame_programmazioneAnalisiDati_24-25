@@ -237,12 +237,19 @@ Salva lo stato dell'hotel su un file. Le eccezioni non devono essere gestite in 
 :param nomefile: nome del file su cui salvare lo stato dell'hotel
 """
 def salva(self, nomefile):
-    with open(nomefile, 'w') as file:
+  
+    with open(nomefile, 'w', encoding='utf-8') as file:
+        # Intestazione
         file.write("Hotel\n")
+        # Salvataggio delle stanze
         for stanza in self.stanze.values():
             file.write(f"{stanza.get_numero_stanza()},{stanza.get_posti()},{stanza.get_prezzo_base()}\n")
+        # Salvataggio delle prenotazioni
         for prenotazione in self.prenotazioni.values():
-            file.write(f"{prenotazione.get_id()},{prenotazione.get_numero_stanza()},{prenotazione.get_data_arrivo()},{prenotazione.get_data_partenza()},{prenotazione.get_nome_cliente()},{prenotazione.get_numero_persone()}\n")
+            file.write(
+                f"{prenotazione.get_id()},{prenotazione.get_numero_stanza()},{prenotazione.get_data_arrivo()},"
+                f"{prenotazione.get_data_partenza()},{prenotazione.get_nome_cliente()},{prenotazione.get_numero_persone()}\n"
+            )
 
 """
 Carica lo stato dell'hotel da un file e sostituisce lo stato corrente se il caricamento va a buon fine. Le eccezioni non devono essere gestite in questo metodo.
@@ -250,21 +257,47 @@ Carica lo stato dell'hotel da un file e sostituisce lo stato corrente se il cari
 :raise ValueError: se il file non è nel formato corretto (es. se non è presente il nome dell'hotel)
 """
 def carica(self, nomefile):
-    with open(nomefile, 'r') as file:
+    """
+    Carica lo stato dell'hotel da un file e sostituisce lo stato corrente se il caricamento va a buon fine.
+    Le eccezioni non vengono gestite in questo metodo.
+    
+    :param nomefile: nome del file da cui caricare lo stato dell'hotel
+    :raise ValueError: se il file non è nel formato corretto (es. se non è presente "Hotel" come prima riga)
+    """
+    with open(nomefile, 'r', encoding='utf-8') as file:
         righe = file.readlines()
-        if righe[0].strip() != "Hotel":
+        
+        if not righe or righe[0].strip() != "Hotel":
             raise ValueError("Il file non è nel formato corretto")
+        # Reset dello stato corrente
         self.stanze = {}
         self.prenotazioni = {}
         self.id_prenotazioni = 1
+        # Elaborazione delle righe successive
         for riga in righe[1:]:
+            # Se la riga è vuota la saltiamo 
+            if not riga.strip():
+                continue
             dati = riga.strip().split(",")
             if len(dati) == 3:
+                # Dati della stanza: numero_stanza, posti, prezzo_base
                 stanza = Stanza(int(dati[0]), int(dati[1]), float(dati[2]))
                 self.stanze[int(dati[0])] = stanza
             elif len(dati) == 6:
-                prenotazione = Prenotazione(int(dati[0]), int(dati[1]), Data.from_string(dati[2]), Data.from_string(dati[3]), dati[4], int(dati[5]))
+                # Dati della prenotazione: id, numero_stanza, data_arrivo, data_partenza, nome_cliente, numero_persone
+                prenotazione = Prenotazione(
+                    int(dati[0]),
+                    int(dati[1]),
+                    Data.from_string(dati[2]),
+                    Data.from_string(dati[3]),
+                    dati[4],
+                    int(dati[5])
+                )
                 self.prenotazioni[int(dati[0])] = prenotazione
+                # Aggiorna l'id progressivo se necessario
                 if int(dati[0]) >= self.id_prenotazioni:
                     self.id_prenotazioni = int(dati[0]) + 1
+            else:
+                raise ValueError("Il file contiene una riga con formato non riconosciuto")
+
     
