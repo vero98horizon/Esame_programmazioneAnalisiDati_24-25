@@ -73,13 +73,13 @@ class Data:
     def __lt__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano #TODO qua non dovrebbbe essere > invece di <?
+        return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano 
     
     #metodo per il confronto di min
     def __gt__(self, other):
         if not isinstance(other, Data):
             raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano
+        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano
     #todo questo metodo sopra non dovrebbe dare il valore minimo tra i due e il metodo sopra ancora il maggiore??
     #metodo per il confronto di minore o uguale tra due date
     def __le__(self, other):
