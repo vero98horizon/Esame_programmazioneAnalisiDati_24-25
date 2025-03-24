@@ -1,4 +1,4 @@
-from classi import Data
+from classi import Data, gestione_errori
 """
 Definire una classe Stanza che rappresenta una stanza di un hotel.
 #STATO:
@@ -19,7 +19,6 @@ class Stanza:
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)
         self.set_prezzo_base(prezzo_base)
-
     def get_numero_stanza(self):
         return self.numero_stanza
     
@@ -43,7 +42,7 @@ class Stanza:
     def get_prezzo_base(self):
         return self.prezzo_base
     
-    def set_prezzo_base(self, prezzo_base):
+    def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
         if type(prezzo_base) != float:
             raise TypeError("Il prezzo base deve essere un numero con virgola")
         if prezzo_base <= 1:
@@ -57,13 +56,17 @@ class Stanza:
             raise ValueError("Il numero di notti deve essere un intero positivo")
         return self.prezzo_base * numero_notti
     
-    def __str__(self):
+    def __str__(self):#todo cambiare nome metodo questo e quello dopo
         return f"{self.numero_stanza}, {self.posti} posti"
     
     def __eq__(self, other):
-        return self.numero_stanza == other.numero_stanza and self.posti == other.posti
+        if not isinstance(other, Stanza):
+            return False
+        return (self.numero_stanza == other.numero_stanza and 
+                self.posti == other.posti and 
+                self.prezzo_base == other.prezzo_base)
     
-    def get_tipo_stanza(self):
+    def get_tipo_stanza(self):#todo da finire
         return "Stanza"
     
 """
@@ -98,10 +101,9 @@ Definire una classe Doppia che estende Stanza e rappresenta una stanza doppia di
 - Metodo per il confronto di uguaglianza profonda tra due stanze doppie.
 - Metodo get_tipo_stanza che restituisce il nome della classe. 
 """
-
 class Suite(Stanza):
     def __init__(self, numero_stanza, posti, extra, prezzo_base):
-        if posti < 4:
+        if posti < 4:       #todo manca controllo  se è 0, e servono dei valori di default per extra che deve essere una lista di stringhe
             raise ValueError("Una suite deve avere almeno 4 posti")
         super().__init__(numero_stanza, posti, prezzo_base)
         self.set_extra(extra)
@@ -122,13 +124,16 @@ class Suite(Stanza):
             raise TypeError("Il numero di notti deve essere un intero")
         if numero_notti < 0:
             raise ValueError("Il numero di notti deve essere un intero positivo")
-        return self.prezzo_base * numero_notti * 1.5 + 10 * len(self.extra)
+        return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
         return f"Suite {self.numero_stanza}, {self.posti} posti, con {', '.join(self.extra)}"
     
     def __eq__(self, other):
-        return super().__eq__(other) and self.extra == other.extra
+        if not isinstance(other, Suite):
+            return False
+        return (super().__eq__(other) and 
+                self.extra == other.extra)
     def get_tipo_stanza(self):
         return "Suite"
     
@@ -140,7 +145,9 @@ class Singola(Stanza):
         return f"Singola {self.numero_stanza}, 1 posto"
     
     def __eq__(self, other):
-        super().__eq__(other)
+        if not isinstance(other, Singola):
+            return False
+        return super().__eq__(other)
     
     def get_tipo_stanza(self):
         return "Singola"
@@ -150,12 +157,15 @@ class Doppia(Stanza):
         super().__init__(numero_stanza, 2, prezzo_base)
 
     def calcola_prezzo(self, numero_notti):
+        gestione_errori(numero_notti,int,0)
         return self.prezzo_base * 1.2 * numero_notti
     
     def __str__(self):
         return f"Doppia {self.numero_stanza}, 2 posti"
     
     def __eq__(self, other):
+        if not isinstance(other, Doppia):
+            return False
         return super().__eq__(other)
     
     def get_tipo_stanza(self):
