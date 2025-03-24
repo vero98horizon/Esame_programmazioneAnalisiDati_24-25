@@ -53,33 +53,31 @@ class Hotel:
     :raise KeyError: se la stanza non è presente nell'hotel
     """
     def prenota(self, numero_stanza, data_arrivo, data_partenza, nome_cliente, numero_persone):
-        gestione_errori(data_arrivo,Data)
-        gestione_errori(data_partenza,Data)
-        gestione_errori(nome_cliente,str)
-        gestione_errori(numero_persone,int,0)
+        gestione_errori(data_arrivo, Data)
+        gestione_errori(data_partenza, Data)
+        gestione_errori(nome_cliente, str)
+        gestione_errori(numero_persone, int, 0)
         
         if numero_stanza not in self.stanze:
-            raise KeyError("La stanza {numero_stanza} non esiste")
-           # Check if dates are valid (arrival before departure)
+            raise KeyError(f"La stanza {numero_stanza} non esiste")
+        
         if data_arrivo >= data_partenza:
             raise ValueError("La data di arrivo deve essere precedente alla data di partenza")
         
         stanza = self.stanze[numero_stanza]
-        if numero_persone > stanza.get_posti():     #Controllo numero persone rispetto ai posti della stanza
-            raise ValueError(f"La stanza {numero_stanza} non può ospitare più di {stanza.get_posti()} persone")
-    
-        for prenotazione in self.prenotazioni.values():# Controllo sovrapposizione date
-                if prenotazione.numero_stanza == numero_stanza:
-              #      if data_arrivo < prenotazione.data_partenza and data_partenza > prenotazione.data_arrivo:
-               #         raise ValueError("La stanza è già occupata nelle date indicate")
-                    if not (data_partenza < prenotazione.data_arrivo or data_arrivo > prenotazione.data_partenza):
-                        raise ValueError(f"La stanza {numero_stanza} non è disponibile per il periodo richiesto")
-            
+        # Supponendo che ora usi proprietà: stanza.posti invece di stanza.get_posti()
+        if numero_persone > stanza.get_posti():
+            raise ValueError(f"La stanza {numero_stanza} non può ospitare più di {stanza.posti} persone")
+        
+        if not self._stanza_disponibile(numero_stanza, data_arrivo, data_partenza):
+            raise ValueError(f"La stanza {numero_stanza} non è disponibile per il periodo richiesto")
+        
         id_prenotazione = self.id_prenotazioni
         self.id_prenotazioni += 1
         prenotazione = Prenotazione(id_prenotazione, numero_stanza, data_arrivo, data_partenza, nome_cliente, numero_persone)
         self.prenotazioni[id_prenotazione] = prenotazione
         return id_prenotazione
+
     """
     Disdice una prenotazione dell'hotel.
     :param indice della prenotazione da disdire
@@ -187,19 +185,14 @@ class Hotel:
     :raise TypeError: se data non è un oggetto di tipo Data
     """
     def get_stanze_libere(self, data):
-        data = Data(data.giorno, data.mese)
-        if type(data) != Data:
-            raise TypeError("La data deve essere un oggetto di tipo Data")
+        gestione_errori(data, Data)
         stanze_libere = []
         for stanza in self.stanze.values():
-            occupata = False
-            for prenotazione in self.prenotazioni.values():
-                if prenotazione.get_numero_stanza() == stanza.get_numero_stanza():
-                    if prenotazione.data_arrivo <= data and prenotazione.data_partenza >= data:
-                        occupata = True
-            if not occupata:
+            # Utilizziamo _stanza_disponibile con l'intervallo [data, data]
+            if self._stanza_disponibile(stanza.numero_stanza, data, data):
                 stanze_libere.append(stanza)
         return stanze_libere
+
 
         
 
@@ -299,7 +292,6 @@ class Hotel:
                     elif tipo == "Doppia":
                         nuovo_stanze[numero] = Doppia(numero, prezzo)
                     elif tipo == "Suite":
-                        # Per semplicità, ricreiamo una Suite con servizi di default
                         nuovo_stanze[numero] = Suite(numero, posti, ["TV", "Frigo"], prezzo)
                     else:
                         raise ValueError(f"Tipo di stanza non riconosciuto: {tipo}")
@@ -327,3 +319,18 @@ class Hotel:
             self.stanze = nuovo_stanze
             self.prenotazioni = nuovo_prenotazioni
             self.id_prenotazioni = max([0] + list(nuovo_prenotazioni.keys())) + 1
+
+
+    def _stanza_disponibile(self, numero_stanza, data_arrivo, data_partenza):
+        """
+        Verifica se la stanza (identificata da numero_stanza) è disponibile 
+        per l'intervallo [data_arrivo, data_partenza].
+        
+        Restituisce True se la stanza è libera, False altrimenti.
+        """
+        for pren in self.prenotazioni.values():
+            if pren.numero_stanza == numero_stanza:
+                # Se l'intervallo della prenotazione si sovrappone a quello richiesto:
+                if not (data_partenza < pren.data_arrivo or data_arrivo > pren.data_partenza):
+                    return False
+        return True

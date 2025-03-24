@@ -23,37 +23,25 @@ class Stanza:
         return self.numero_stanza
     
     def set_numero_stanza(self, numero_stanza):
-        if type(numero_stanza) != int:
-            raise TypeError("Il numero della stanza deve essere un intero")
-        if numero_stanza <= 0:
-            raise ValueError("Il numero della stanza deve essere un intero positivo")
+        gestione_errori(numero_stanza,int,0)
         self.numero_stanza = numero_stanza
 
     def get_posti(self):
         return self.posti
     
     def set_posti(self, posti):
-        if type(posti) != int:
-            raise TypeError("Il numero di posti deve essere un intero")
-        if posti <= 0:
-            raise ValueError("Il numero di posti deve essere un intero positivo")
+        gestione_errori(posti,int,0)
         self.posti = posti
 
     def get_prezzo_base(self):
         return self.prezzo_base
     
     def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
-        if type(prezzo_base) != float:
-            raise TypeError("Il prezzo base deve essere un numero con virgola")
-        if prezzo_base <= 1:
-            raise ValueError("Il prezzo base deve essere maggiore di 1")
+        gestione_errori(prezzo_base,float,0)
         self.prezzo_base = prezzo_base
 
     def calcola_prezzo(self, numero_notti):
-        if type(numero_notti) != int:
-            raise TypeError("Il numero di notti deve essere un intero")
-        if numero_notti < 0:
-            raise ValueError("Il numero di notti deve essere un intero positivo")
+        gestione_errori(numero_notti,int,0)
         return self.prezzo_base * numero_notti
     
     def __str__(self):#todo cambiare nome metodo questo e quello dopo
@@ -66,8 +54,8 @@ class Stanza:
                 self.posti == other.posti and 
                 self.prezzo_base == other.prezzo_base)
     
-    def get_tipo_stanza(self):#todo da finire
-        return "Stanza"
+    def get_tipo_stanza(self):
+        return type(self).__name__
     
 """
 Definire una classe Suite che estende Stanza e rappresenta una suite di un hotel. Una suite è una stanza con almeno 4 posti e con una lista di extra.
@@ -112,18 +100,13 @@ class Suite(Stanza):
         return self.extra
     
     def set_extra(self, extra):
-        if type(extra) != list:
-            raise TypeError("Gli extra devono essere una lista")
+        gestione_errori(extra,list)
         for e in extra:
-            if type(e) != str:
-                raise TypeError("Gli extra devono essere delle stringhe")
+            gestione_errori(e,str)
         self.extra = extra
 
     def calcola_prezzo(self, numero_notti):
-        if type(numero_notti) != int:
-            raise TypeError("Il numero di notti deve essere un intero")
-        if numero_notti < 0:
-            raise ValueError("Il numero di notti deve essere un intero positivo")
+        gestione_errori(numero_notti,int,0)
         return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
@@ -135,7 +118,7 @@ class Suite(Stanza):
         return (super().__eq__(other) and 
                 self.extra == other.extra)
     def get_tipo_stanza(self):
-        return "Suite"
+            return super().get_tipo_stanza()
     
 class Singola(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
@@ -150,7 +133,7 @@ class Singola(Stanza):
         return super().__eq__(other)
     
     def get_tipo_stanza(self):
-        return "Singola"
+            return super().get_tipo_stanza()
     
 class Doppia(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
@@ -168,7 +151,6 @@ class Doppia(Stanza):
             return False
         return super().__eq__(other)
     
-    def get_tipo_stanza(self):
-        return "Doppia"
-    
+def get_tipo_stanza(self):
+        return super().get_tipo_stanza()
 
