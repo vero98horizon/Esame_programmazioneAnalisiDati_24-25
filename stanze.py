@@ -121,7 +121,7 @@ class Suite(Stanza):
             raise TypeError("Il numero di notti deve essere un intero")
         if numero_notti < 0:
             raise ValueError("Il numero di notti deve essere un intero positivo")
-        return self.prezzo_base * numero_notti * 1.5 + 10 * len(self.extra)
+        return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
         return f"Suite {self.numero_stanza}, {self.posti} posti, con {', '.join(self.extra)}"
@@ -139,7 +139,11 @@ class Singola(Stanza):
         return f"Singola {self.numero_stanza}, 1 posto"
     
     def __eq__(self, other):
-        super().__eq__(other)
+        if not isinstance(other, Singola):
+            return False
+            
+        return (super().__eq__(other)
+                and self.get_prezzo_base() == other.get_prezzo_base())
     
     def get_tipo_stanza(self):
         return "Singola"
@@ -149,13 +153,14 @@ class Doppia(Stanza):
         super().__init__(numero_stanza, 2, prezzo_base)
 
     def calcola_prezzo(self, numero_notti):
+        gestione_errori(numero_notti,int,0)
         return self.prezzo_base * 1.2 * numero_notti
     
     def __str__(self):
         return f"Doppia {self.numero_stanza}, 2 posti"
     
     def __eq__(self, other):
-        return super().__eq__(other)
+        return isinstance(other, Doppia) and super().__eq__(other)
     
     def get_tipo_stanza(self):
         return "Doppia"

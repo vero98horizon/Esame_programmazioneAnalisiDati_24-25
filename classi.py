@@ -21,7 +21,7 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
-    def __init__(self, giorno:int, mese:int, ):
+    def __init__(self, giorno:int, mese:int,anno:2025 ):
         self._mese = None 
         self._giorno = None   
         self.set_mese(mese)
@@ -35,7 +35,7 @@ class Data:
     @giorno.setter
     def giorno(self, valore):
         #controllo che il mese sia stato impostato
-        if get_mese is None:
+        if self._mese is None::
             raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
         # Recupero il numero massimo di giorni nel mese
         giorni_max = self.mappa_mesi.get(self._mese)
@@ -52,12 +52,11 @@ class Data:
         self._mese = valore  
     #metodo per la rappresentazione in forma di stringa della data
     def data_in_stringa(self):
-        return f"{self._giorno}/{self._mese}/2025"
+        return f"{self._giorno}/{self._mese}"
     
     #metodo per il calcolo della differenza in giorni tra due date
     def __sub__(self, other):
-        if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+       gestione_errori(other,Data)
         # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
         giorni_self = sum(Data.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno
         giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
@@ -71,16 +70,16 @@ class Data:
     #metodo per il confronto di maggiore tra due date
     def __lt__(self, other):
         gestione_errori(other,Data)
-        return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano 
+        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano 
     
     #metodo per il confronto di min
     def __gt__(self, other):
         gestione_errori(other,Data)
-        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano
+        return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano
     #metodo per il confronto di minore o uguale tra due date
     def __le__(self, other):
            gestione_errori(other,Data)
-        return (self._mese, self._giorno) <= (other._mese, other._giorno) # ritorna un valore booleano
+           return (self._mese, self._giorno) <= (other._mese, other._giorno) # ritorna un valore booleano
     
 """
 Definire una classe Prenotazione per rappresentare una prenotazione di una stanza di un hotel.
@@ -101,12 +100,13 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
 """
 #cercare i metodi per il confronto di uguaglianza profonda o no
-class Prenotazione:         #todo non è stata considerato questo punto presente nellle linee guida: "Non si considerano date a cavallo della fine dell’anno, ad esempio: arrivo 31/12 partenza 1/1"
+class Prenotazione:         #TODO non è stata considerato questo punto presente nellle linee guida: "Non si considerano date a cavallo della fine dell’anno, ad esempio: arrivo 31/12 partenza 1/1"
     id_counter = 1
 
     def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="", numero_persone=0):
         if id_prenotazione is None:
-            self.id_prenotazione = Prenotazione.id_counter+1  
+              self.id_prenotazione = Prenotazione.id_counter
+              Prenotazione.id_counter += 1
         else:
             gestione_errori(id_prenotazione,int,0)
             self.id_prenotazione = id_prenotazione
@@ -142,8 +142,7 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     @data_arrivo.setter
     def data_arrivo(self, value):
-        if not isinstance(value, Data):
-            raise TypeError("La data di arrivo deve essere un oggetto di tipo Data.")
+        gestione_errori(value,Data)
         self._data_arrivo = value
 
     @property
@@ -153,6 +152,8 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
     @data_partenza.setter   
     def data_partenza(self, value):
         gestione_errori(value,Data) 
+        if self.data_arrivo is None:
+            raise ValueError("Impostare la data di arrivo prima della data di partenza")
         if value < self.data_arrivo:
             raise ValueError("La data di partenza non può essere precedente alla data di arrivo.")
         self._data_partenza = value
@@ -163,11 +164,11 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     @nome_cliente.setter
     def nome_cliente(self, value):
-        value.strip()
+        value = value.strip()
         gestione_errori(value,str)
-        #controllo lunghezza minima e massima del nome
         lunghezza_nome = len(value)
-        gestione_errori(lunghezza_nome, int, min=3, max=20)
+        if lunghezza_nome > 20 or lunghezza_nome < 3: #controllo lunghezza nome
+            raise ValueError("Il nome deve essere lungo almeno 3 caratteri ed un massimo di 20")
         self._nome_cliente = value
  
     @property
@@ -195,7 +196,7 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
             self.data_partenza == other.data_partenza and
             self.nome_cliente == other.nome_cliente and
             self.numero_persone == other.numero_persone
-        )#todo questo metodo potrebbe restituire qualcosa di diverso da un booleano, magari un messaggio dove ci sta la descrizione delle uguaglianzee o delle differenze e poi credo che dobbiamo passare gli id delle prenotazioni presenti nel file txt. quindi penso sia da rifare questo qui
+        )
 
 def gestione_errori(data, tipo_dato, min=None, max=None):
     if not isinstance(data, tipo_dato):
@@ -205,7 +206,7 @@ def gestione_errori(data, tipo_dato, min=None, max=None):
         if data < min:
             raise ValueError(f"Il valore deve essere maggiore di {min}.")
 
-    else if max is not None:
+    if max is not None:
           if data > max:
             raise ValueError(f"Il valore deve essere minore a {max}.")
 
