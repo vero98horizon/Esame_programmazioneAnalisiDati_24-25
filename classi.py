@@ -65,27 +65,22 @@ class Data:
 
     #metodo per il confronto di uguaglianza tra due date
     def __eq__(self, other):
-        if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+        gestione_errori(other,Data)
         return self._giorno == other._giorno and self._mese == other._mese # ritorna un valore booleano
     
     #metodo per il confronto di maggiore tra due date
     def __lt__(self, other):
-        if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+        gestione_errori(other,Data)
         return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano 
     
     #metodo per il confronto di min
     def __gt__(self, other):
-        if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
+        gestione_errori(other,Data)
         return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano
-    #todo questo metodo sopra non dovrebbe dare il valore minimo tra i due e il metodo sopra ancora il maggiore??
     #metodo per il confronto di minore o uguale tra due date
     def __le__(self, other):
-        if not isinstance(other, Data):
-            raise TypeError("Operazione non consentita tra oggetti di tipo diverso")
-        return (self._mese, self._giorno) >= (other._mese, other._giorno) # ritorna un valore booleano #TODO qua non dovrebbbe essere <= invece di >=? e stesso discorso di sopra per il return della data minore
+           gestione_errori(other,Data)
+        return (self._mese, self._giorno) <= (other._mese, other._giorno) # ritorna un valore booleano
     
 """
 Definire una classe Prenotazione per rappresentare una prenotazione di una stanza di un hotel.
@@ -111,11 +106,9 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="", numero_persone=0):
         if id_prenotazione is None:
-            self.id_prenotazione = Prenotazione.id_counter  #todo qua dovremmo andare a vedere nel file l'id presente, magari si fa una funzione a parte
-            Prenotazione.id_counter += 1
+            self.id_prenotazione = Prenotazione.id_counter+1  
         else:
-            if not isinstance(id_prenotazione, int) or id_prenotazione < 0:
-                raise ValueError("L'ID della prenotazione deve essere un intero non negativo.")
+            gestione_errori(id_prenotazione,int,0)
             self.id_prenotazione = id_prenotazione
 
         self.numero_stanza = numero_stanza
@@ -131,10 +124,7 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     @id_prenotazione.setter
     def id_prenotazione(self, value):
-        if not isinstance(value, int):
-            raise TypeError("L'ID della prenotazione deve essere un intero.")
-        if value < 0:
-            raise ValueError("L'ID della prenotazione deve essere un intero non negativo.")
+        gestione_errori(value,int,0)
         self._id_prenotazione = value
 
     @property
@@ -143,10 +133,7 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     @numero_stanza.setter
     def numero_stanza(self, value):
-        if not isinstance(value, int):
-            raise TypeError("Il numero della stanza deve essere un intero.")
-        if value <= 0:
-            raise ValueError("Il numero della stanza deve essere un intero positivo.")
+        gestione_errori(value,int,0)
         self._numero_stanza = value
 
     @property
@@ -163,14 +150,11 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
     def data_partenza(self):
         return self._data_partenza
 
-    @data_partenza.setter   #todo qua dovremmo aggiungere un controllo per vedere se la data di arrivo è stata inserita prima della data di partenza forse?
+    @data_partenza.setter   
     def data_partenza(self, value):
-        if not isinstance(value, Data):
-            raise TypeError("La data di partenza deve essere un oggetto di tipo Data.")
+        gestione_errori(value,Data) 
         if value < self.data_arrivo:
             raise ValueError("La data di partenza non può essere precedente alla data di arrivo.")
-        if value.anno != self.data_arrivo.anno:
-            raise ValueError("Le prenotazioni devono essere all'interno dello stesso anno solare.")
         self._data_partenza = value
 
     @property
@@ -179,29 +163,27 @@ class Prenotazione:         #todo non è stata considerato questo punto presente
 
     @nome_cliente.setter
     def nome_cliente(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Il nome del cliente deve essere una stringa.")
-        if not value.strip(): #todo qua aggiungiamo un controllo con una regex di qualche genere per vedere se il nome è composto da lettere,comincia per maiuscola e di lunghezza minima e massima di qualche genere.
-            raise ValueError("Il nome del cliente deve essere una stringa non vuota.")
+        value.strip()
+        gestione_errori(value,str)
+        #controllo lunghezza minima e massima del nome
+        lunghezza_nome = len(value)
+        gestione_errori(lunghezza_nome, int, min=3, max=20)
         self._nome_cliente = value
-
+ 
     @property
     def numero_persone(self):
         return self._numero_persone
 
     @numero_persone.setter
     def numero_persone(self, value):
-        if not isinstance(value, int):
-            raise TypeError("Il numero di persone deve essere un intero.")
-        if value <= 0:
-            raise ValueError("Il numero di persone deve essere un intero positivo.")
+        gestione_errori(value,int,0)
         self._numero_persone = value
 
     #- Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
 
     def __str__(self):
         persone_str = "persona" if self.numero_persone == 1 else "persone"
-        return f"Prenotazione {self.id_prenotazione} per stanza {self.numero_stanza} da {self.data_arrivo.get_giorno()}/{self.data_arrivo.get_mese()} a {self.data_partenza.get_giorno()}/{self.data_partenza.get_mese()} a nome {self.nome_cliente} per {self.numero_persone} {persone_str}"
+        return f"Prenotazione {self.id_prenotazione} per stanza {self.numero_stanza} dal {self.data_arrivo.get_giorno()}/{self.data_arrivo.get_mese()} al {self.data_partenza.get_giorno()}/{self.data_partenza.get_mese()} a nome {self.nome_cliente} per {self.numero_persone} {persone_str}"
 
     #- Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
     def __eq__(self, other):
@@ -221,9 +203,9 @@ def gestione_errori(data, tipo_dato, min=None, max=None):
 
     if min is not None:
         if data < min:
-            raise ValueError(f"Il valore deve essere maggiore  a {min}.")
+            raise ValueError(f"Il valore deve essere maggiore di {min}.")
 
-    if max is not None:
-        if data > max:
+    else if max is not None:
+          if data > max:
             raise ValueError(f"Il valore deve essere minore a {max}.")
 
