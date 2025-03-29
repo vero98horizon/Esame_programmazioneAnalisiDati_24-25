@@ -15,3 +15,18 @@
  Per uscire dall'applicazione deve essere possibile usare sia mouse che tastiera.
  L'aspetto dell'interfaccia viene deciso dallo studente.
 """
+
+
+import tkinter as tk
+# creazione di una finestra (task1) -- file: 001finestra.py
+window = tk.Tk()
+# creiamo un widget della classe Label
+greeting = tk.Label(text="Hello, Tkinter")
+foreground="black"  
+
+# inseriamo il widget nella finestra
+# pack() fa il resize della finestra fino a includere esattamente i widget in ordine
+greeting.pack()
+
+# aspettiamo un evento (task 4) e attiviamo la finestra (a questo punto viene visualizzata)
+window.mainloop()

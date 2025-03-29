@@ -22,8 +22,6 @@ class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
     def __init__(self, giorno:int, mese:int,anno=2025 ):
-        self._mese = None 
-        self._giorno = None   
         self.mese = mese
         self.giorno = giorno
     #metodi getter e setter per giorno e mese
@@ -34,13 +32,15 @@ class Data:
 
     @giorno.setter
     def giorno(self, valore):
-        #controllo che il mese sia stato impostato
-        if self._mese is None:
+       try:
+        if self._mese is None: #controllo che il mese sia stato impostato
             raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
         # Recupero il numero massimo di giorni nel mese
         giorni_max = self.mappa_mesi.get(self._mese)
-        gestione_errori(valore,int,0,giorni_max+1)  
+        gestione_errori(valore,int,0,giorni_max+1)
         self._giorno = valore
+       except ValueError as e:
+           raise TypeError(f"Errore nella creazione del giorno della Data con errore: {e}") from e
 
     @property
     def mese(self):
@@ -48,24 +48,37 @@ class Data:
 
     @mese.setter
     def mese(self, valore):
-        gestione_errori(valore,int,0,13)
-        self._mese = valore  
+     try:
+      gestione_errori(valore,int,0,13)
+      self._mese = valore
+     except ValueError as e:
+         raise TypeError(f"Errore nella creazione del mese della Data con errore: {e}") from e
+
     #metodo per la rappresentazione in forma di stringa della data
     def data_in_stringa(self):
         return f"{self._giorno}/{self._mese}"
     
     #metodo per il calcolo della differenza in giorni tra due date
     def __sub__(self, other):
+       try:
         gestione_errori(other,Data)
         # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
         giorni_self = sum(Data.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno
         giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
         return abs(giorni_self - giorni_other)
+       except ValueError as e:
+        raise TypeError(f"Errore nel calcolo della differenza delle date con errore: {e}") from e
+
+
+
 
     #metodo per il confronto di uguaglianza tra due date
     def __eq__(self, other):
+     try:
         gestione_errori(other,Data)
-        return self._giorno == other._giorno and self._mese == other._mese # ritorna un valore booleano
+        return self._giorno == other._giorno and self._mese == other._mese
+     except ValueError as e:
+         raise TypeError(f"Errore nel confronto di uguaglianze delle date con errore: {e}") from e
     
     #metodo per il confronto di maggiore tra due date
     def __lt__(self, other):
@@ -146,6 +159,10 @@ class Prenotazione:         #TODO non è stata considerato questo punto presente
 
     @numero_stanza.setter
     def numero_stanza(self, value):
+        try:
+            gestione_errori(value,int,0)
+        except TypeError as e:
+            raise TypeError(f"errore{e}") from e
         gestione_errori(value,int,0)
         self._numero_stanza = value
 
