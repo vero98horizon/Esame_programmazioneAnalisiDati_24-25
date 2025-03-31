@@ -252,6 +252,7 @@ class Hotel:
     Salva lo stato dell'hotel su un file. Le eccezioni non devono essere gestite in questo metodo.
     :param nomefile: nome del file su cui salvare lo stato dell'hotel
         """
+
     def salva(self, nomefile):
         with open(nomefile, 'w', encoding='utf-8') as file:
             file.write("Hotel\n")
