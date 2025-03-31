@@ -18,7 +18,7 @@ Inserisce una nuova stanza nell'hotel.
 :param stanza oggetto di tipo Stanza da aggiungere all'hotel
 :raise TypeError: se i parametri non hanno il tipo corretto
 :raise ValueError: se i parametri non sono nel range di valori ammessi
-"""      
+"""
 class Hotel:
     def __init__(self):
        self.stanze = {}
@@ -32,11 +32,11 @@ class Hotel:
         stanze_str = ", ".join(str(num) for num in sorted(self.stanze.keys()))
         return f"Hotel: {len(self.stanze)} stanze ({stanze_str}), {len(self.prenotazioni)} prenotazioni."
             
-    def aggiungi_stanza(self, stanza):  
+    def aggiungi_stanza(self, stanza):
         gestione_errori(stanza,Stanza)
         if stanza.get_numero_stanza() in self.stanze:
             raise ValueError("La stanza è già presente nell'hotel")
-        self.stanze[stanza.get_numero_stanza()] = stanza 
+        self.stanze[stanza.get_numero_stanza()] = stanza
 
 
     """
@@ -62,7 +62,10 @@ class Hotel:
             raise KeyError(f"La stanza {numero_stanza} non esiste")
         
         if data_arrivo >= data_partenza:
+            if data_arrivo.mese > data_partenza.mese:
+                raise ValueError("Prenotazioni a cavallo dell'anno non sono ammesse")
             raise ValueError("La data di arrivo deve essere precedente alla data di partenza")
+
         
         stanza = self.stanze[numero_stanza]
         # Supponendo che ora usi proprietà: stanza.posti invece di stanza.get_posti()
@@ -93,12 +96,15 @@ class Hotel:
     :param numero_stanza: numero della stanza da rimuovere
     :raise KeyError: se la stanza non è presente nell'hotel
     """
-    def rimuovi_stanza(self, numero_stanza):    
+    def rimuovi_stanza(self, numero_stanza):
+        gestione_errori(numero_stanza, int)
         if numero_stanza not in self.stanze:
             raise KeyError("La stanza non è presente nell'hotel")
-        for prenotazione in list(self.prenotazioni.values()):
-            if prenotazione.get_numero_stanza() == numero_stanza:
-                del self.prenotazioni[prenotazione.get_id()]
+        prenotazioni_da_eliminare = [
+            id_pren for id_pren, pren in self.prenotazioni.items()#.items() prende la chiave e il valore del dizionario "spacchettandoli"
+            if pren.numero_stanza == numero_stanza]
+        for id_pren in prenotazioni_da_eliminare:
+            del self.prenotazioni[id_pren]
 
         del self.stanze[numero_stanza]
 
@@ -109,10 +115,14 @@ class Hotel:
     :raise KeyError: se la stanza non è presente nell'hotel
     """
     def get_stanza(self, numero_stanza):
+       try:
+        gestione_errori(numero_stanza, int)
+
         if numero_stanza not in self.stanze:
             raise KeyError("La stanza non è presente nell'hotel")
         return self.stanze[numero_stanza]
-
+       except KeyError as e:
+        raise KeyError(f"La stanza {numero_stanza} non è presente nell'hotel") from e
     """
     Restituisce la lista delle stanze presenti nell'hotel.
     :return: la lista delle stanze presenti nell'hotel
@@ -204,13 +214,13 @@ class Hotel:
     def get_prenotazioni_tipo_stanza(self, tipo_stanza):
         tipo_stanza = tipo_stanza.capitalize()
         return [prenotazione for prenotazione in self.prenotazioni.values() 
-                if self.stanze[prenotazione.numero_stanza].get_tipo_stanza() == tipo_stanza] 
+                if self.stanze[prenotazione.numero_stanza].get_tipo_stanza() == tipo_stanza]
         """
     Restituisce la lista delle stanze dell'hotel sopra un prezzo specifico fra due date.
     :param numero_notti: numero di notti da considerare
     :param prezzo: prezzo da confrontare
     :return: la lista delle stanze dell'hotel sopra un prezzo specifico
-    """    
+    """
     def get_stanze_sopra_prezzo(self, numero_notti, prezzo):
         numero_notti = int(numero_notti)
         prezzo = float(prezzo)
@@ -302,13 +312,9 @@ class Hotel:
                     id_pren = int(id_pren)
                     num_stanza = int(num_stanza)
                     persone = int(persone)
-                    
+                    data_arrivo,data_partenza= self.parsing_date(data_arr, data_part)
                     # Parsing delle date
-                    g_arr, m_arr = map(int, data_arr.split('/'))
-                    g_part, m_part = map(int, data_part.split('/'))
-                    
-                    data_arrivo = Data(g_arr, m_arr)
-                    data_partenza = Data(g_part, m_part)
+
                     
                     nuovo_prenotazioni[id_pren] = Prenotazione(id_pren, num_stanza, data_arrivo, data_partenza, nome, persone)
                 
@@ -319,6 +325,7 @@ class Hotel:
             self.stanze = nuovo_stanze
             self.prenotazioni = nuovo_prenotazioni
             self.id_prenotazioni = max([0] + list(nuovo_prenotazioni.keys())) + 1
+
 
 
     def _stanza_disponibile(self, numero_stanza, data_arrivo, data_partenza):
@@ -334,3 +341,13 @@ class Hotel:
                 if not (data_partenza < pren.data_arrivo or data_arrivo > pren.data_partenza):
                     return False
         return True
+
+    @classmethod
+    def parsing_date(cls, data_arr, data_part):
+        g_arr, m_arr = map(int, data_arr.split('/'))
+        g_part, m_part = map(int, data_part.split('/'))
+
+        data_arrivo = Data(g_arr, m_arr)
+        data_partenza = Data(g_part, m_part)
+        return data_arrivo, data_partenza
+

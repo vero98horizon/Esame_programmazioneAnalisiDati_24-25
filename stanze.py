@@ -16,6 +16,7 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 """
 class Stanza:
     def __init__(self, numero_stanza, posti, prezzo_base):
+        self.prezzo_base = None
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)
         self.set_prezzo_base(prezzo_base)
@@ -36,7 +37,7 @@ class Stanza:
     def get_prezzo_base(self):
         return self.prezzo_base
     
-    def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
+    def set_prezzo_base(self, prezzo_base): 
         gestione_errori(prezzo_base,float,0)
         self.prezzo_base = prezzo_base
 
@@ -44,7 +45,7 @@ class Stanza:
         gestione_errori(numero_notti,int,0)
         return self.prezzo_base * numero_notti
     
-    def __str__(self):#todo cambiare nome metodo questo e quello dopo
+    def __str__(self):
         return f"{self.numero_stanza}, {self.posti} posti"
     
     def __eq__(self, other):
