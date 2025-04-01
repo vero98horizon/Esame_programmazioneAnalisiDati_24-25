@@ -168,8 +168,8 @@ class Hotel:
     :raise TypeError: se data non è un oggetto di tipo Data
     """
     def get_prenotazioni_data(self, data):
-        return [prenotazione for prenotazione in self.prenotazioni.values() if
-                prenotazione.data_arrivo <= data <= prenotazione.data_partenza]
+        return [prenotazione for prenotazione in self.prenotazioni if
+                prenotazione.data_inizio <= data <= prenotazione.data_fine]
 
     """
     Restituisce il prezzo di una prenotazione specifica ottenuto dal prezzo della stanza per il numero di persone.

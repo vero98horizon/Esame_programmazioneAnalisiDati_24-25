@@ -59,7 +59,7 @@ class Stanza:
                 self.prezzo_base == other.prezzo_base)
     
     def get_tipo_stanza(self):
-        return "Stanza"
+        return type(self).__name__
     
 """
 Definire una classe Suite che estende Stanza e rappresenta una suite di un hotel. Una suite è una stanza con almeno 4 posti e con una lista di extra.
@@ -122,7 +122,7 @@ class Suite(Stanza):
         return (super().__eq__(other) and 
                 self.extra == other.extra)
     def get_tipo_stanza(self):
-        return "Suite"
+        return type(self).__name__
 
 
 class Singola(Stanza):
@@ -138,8 +138,9 @@ class Singola(Stanza):
         return super().__eq__(other)
     
     def get_tipo_stanza(self):
-            return "Singola"
-    
+        return type(self).__name__
+
+
 class Doppia(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
         super().__init__(numero_stanza, 2, prezzo_base)
@@ -157,5 +158,5 @@ class Doppia(Stanza):
         return super().__eq__(other)
     
 def get_tipo_stanza(self):
-        return "Doppia"
+        return type(self).__name__
 
