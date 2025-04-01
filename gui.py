@@ -161,6 +161,7 @@ class myApp:
         tk.Button(popup, text="Prenota",
                   command=lambda: self.prenota_stanza(entrate, popup)).pack(pady=10)
 
+
     def gestione_errori(self, callback, value, popup):
         #gestisce tutti gli errori cosi da non dover scrivere ogni volta il try catch, se non ci sono errori chiude il popup, altrimenti mostra l'errore
         try:
@@ -187,20 +188,25 @@ class myApp:
             id_pren = self.hotel.prenota(num_stanza, arrivo, partenza, nome, persone)
             messagebox.showinfo("Successo", f"Prenotazione creata (ID: {id_pren})")
             popup.destroy()
+            self.aggiorna_visualizzazioni_stanze()
         except Exception as e:
             messagebox.showerror("Errore", str(e))
 
     def elimina_prenotazione(self, pren_id):
         """Disdice una prenotazione"""
         try:
+            gestione_errori_data(pren_id, int)
             self.hotel.disdici(int(pren_id))
             messagebox.showinfo("Successo", "Prenotazione disdetta")
+            self.aggiorna_visualizzazioni_stanze()
         except Exception as e:
             messagebox.showerror("Errore", str(e))
 
     def mostra_prezzo_prenotazione(self, pren_id):
         """Mostra il prezzo di una prenotazione"""
         try:
+            gestione_errori_data(pren_id, int)
+
             prezzo = self.hotel.prezzo_prenotazione(int(pren_id))
             messagebox.showinfo("Prezzo", f"Prezzo: {prezzo}€")
         except Exception as e:
@@ -209,8 +215,8 @@ class myApp:
     def mostra_stanze_disponibili(self, data_str):
         """Mostra le stanze libere in una data"""
         try:
-            giorno, mese = map(int, data_str.split('/'))
-            data = Data(giorno, mese)
+            data_arrivo, _ = Hotel.parsing_date(data_str, data_str)
+            data = data_arrivo
             stanze = self.hotel.get_stanze_libere(data)
             
             message = "Stanze libere:\n" + "\n".join(
@@ -228,6 +234,7 @@ class myApp:
             self.aggiorna_visualizzazioni_stanze()
 
             messagebox.showinfo("Successo", "Hotel caricato correttamente")
+            self.aggiorna_visualizzazioni_stanze()
         except Exception as e:
             messagebox.showerror("Errore", str(e))
 
@@ -255,7 +262,7 @@ class myApp:
         """Mostra lo stato delle stanze in una data"""
         try:
 
-            data =  Hotel.parsing_date(data_str[0], data_str[1])
+            data, _ = Hotel.parsing_date(data_str, data_str)
             prenotazioni = self.hotel.get_prenotazioni_data(data)
             
             message = f"Stato stanze al {data_str}:\n"

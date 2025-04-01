@@ -258,7 +258,7 @@ class Prenotazione:
         )
 
 def gestione_errori_data(data, tipo_dato, minimo=None, massimo=None):  #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
-                          # TODO nella fase di testing controllare come viene propagato l'errore con il typerror e value error
+
                           if tipo_dato is int:
                               if isinstance(data, str):
                                   try:

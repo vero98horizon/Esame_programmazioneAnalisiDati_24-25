@@ -87,7 +87,6 @@ class Hotel:
     :raise KeyError: se la prenotazione non è presente nell'hotel
     """    
     def disdici(self, indice):
-        gestione_errori_data(indice, int)
         self.controllo_indice(indice)
         del self.prenotazioni[indice]
 
@@ -168,9 +167,8 @@ class Hotel:
     :raise TypeError: se data non è un oggetto di tipo Data
     """
     def get_prenotazioni_data(self, data):
-        return [prenotazione for prenotazione in self.prenotazioni if
-                prenotazione.data_inizio <= data <= prenotazione.data_fine]
-
+        return [prenotazione for prenotazione in self.prenotazioni.values()
+                if prenotazione.data_arrivo <= data <= prenotazione.data_partenza]
     """
     Restituisce il prezzo di una prenotazione specifica ottenuto dal prezzo della stanza per il numero di persone.
     :param indice: indice della prenotazione da cercare
@@ -199,7 +197,7 @@ class Hotel:
         cliente=[prenotazione for prenotazione in self.prenotazioni.values() if prenotazione.nome_cliente == cliente]
         if not cliente:
             raise ValueError("Nessuna prenotazione per questo cliente")
-
+        return cliente
     """
     Restituisce la lista delle stanze libere nell'hotel in una data specifica.
     :param data: data da cercare
@@ -210,13 +208,12 @@ class Hotel:
         gestione_errori_data(data, Data)
         stanze_libere = []
         for stanza in self.stanze.values():
-            # Utilizziamo _stanza_disponibile con l'intervallo [data, data]
             if self._stanza_disponibile(stanza.numero_stanza, data, data):
                 stanze_libere.append(stanza)
         return stanze_libere
 
 
-        
+
 
     """
     Restituisce la lista delle prenotazioni presenti nell'hotel per un tipo di stanza specifico.
