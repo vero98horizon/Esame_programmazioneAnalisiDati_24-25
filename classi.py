@@ -16,32 +16,36 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo per il confronto di minore tra due date. Esempio di utilizzo: d1 > d2
 - Metodo per il confronto di minore o uguale tra due date. Esempio di utilizzo: d1 <= d2
 """
-#chiedere perchè se il costruttore prende in input giorno, mese e anno, ma poi si inizializzano solo giorno e mese e non l'anno
-#dire se va bene il controllo del giorno e mese nel costruttore o se va fatto in un metodo setter
-class Data:
-    mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31} #2025 anno di riferimento non bisestile
 
-    def __init__(self, giorno:int, mese:int,anno=2025 ):
+
+# chiedere perchè se il costruttore prende in input giorno, mese e anno, ma poi si inizializzano solo giorno e mese e non l'anno
+# dire se va bene il controllo del giorno e mese nel costruttore o se va fatto in un metodo setter
+class Data:
+    mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30,
+                  12: 31}  # 2025 anno di riferimento non bisestile
+
+    def __init__(self, giorno: int, mese: int, anno=2025):
         _mese = None
         self.mese = mese
         self.giorno = giorno
-    #metodi getter e setter per giorno e mese
 
-    @property #property ci permette di definire un metodo che può essere usato come un attributo
-    def giorno(self):
+    # metodi getter e setter per giorno e mese
+
+    @property  # property ci permette di definire un metodo che può essere usato come un attributo
+    def giorno(self):#qui ad esempio possiamo chiamare semplicemente data.giorno e ci chiama questo metodo, a differenza dei metodi getter e setter normali dove serve mettere Data.Getgiorno()
         return self._giorno
 
-    @giorno.setter
+    @giorno.setter  #possiamo usare il setter con lo stesso nome del getter e verrà selezionata una rispetto all'altra in base a quello che viene indicato poi tra le parentesi, per il setter dovremo mettere il valore che vogliamo assegnare, mentre per il getter non si mette nulla
     def giorno(self, valore):
-       try:
-        if self._mese is None: #controllo che il mese sia stato impostato
-            raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
-        # Recupero il numero massimo di giorni nel mese
-        giorni_max = self.mappa_mesi.get(self._mese)
-        gestione_errori(valore,int,0,giorni_max+1)
-        self._giorno = valore
-       except ValueError as e:
-           raise TypeError(f"Errore nella creazione del giorno della Data con errore: {e}") from e
+        try:
+            if self._mese is None:  # controllo che il mese sia stato impostato
+                raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
+            # Recupero il numero massimo di giorni nel mese
+            giorni_max = self.mappa_mesi.get(self._mese)
+            gestione_errori(valore, int, 0, giorni_max + 1)
+            self._giorno = valore
+        except ValueError as e:
+            raise TypeError(f"Errore nella creazione del giorno della Data con errore: {e}") from e
 
     @property
     def mese(self):
@@ -49,68 +53,70 @@ class Data:
 
     @mese.setter
     def mese(self, valore):
-     try:
-      gestione_errori(valore,int,0,13)
-      self._mese = valore
-     except ValueError as e:
-         raise TypeError(f"Errore nella creazione del mese della Data con errore: {e}") from e
-    
-    #metodo per il calcolo della differenza in giorni tra due date
+        try:
+            gestione_errori(valore, int, 0, 13)
+            self._mese = valore
+        except ValueError as e:
+            raise TypeError(f"Errore nella creazione del mese della Data con errore: {e}") from e
+
+    # metodo per il calcolo della differenza in giorni tra due date
     def __sub__(self, other):
-       try:
-        gestione_errori(other,Data)
-        # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
-        giorni_self = sum(Data.mappa_mesi[m] for m in range(1, self._mese)) + self._giorno #usiamo la funzione Sum per sommare i giorni dei mesi precedenti e aggiungere il giorno corrente
-        giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
-        return abs(giorni_self - giorni_other)
-       except ValueError as e:
-        raise ValueError(f"Errore nel calcolo della differenza delle date con errore: {e}") from e
+        try:
+            gestione_errori(other, Data)
+            # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
+            giorni_self = sum(Data.mappa_mesi[m] for m in range(1,
+                                                                self._mese)) + self._giorno  # usiamo la funzione Sum per sommare i giorni dei mesi precedenti e aggiungere il giorno corrente
+            giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
+            return abs(giorni_self - giorni_other)
+        except ValueError as e:
+            raise ValueError(f"Errore nel calcolo della differenza delle date con errore: {e}") from e
 
-
-
-
-    #metodo per il confronto di uguaglianza tra due date
+    # metodo per il confronto di uguaglianza tra due date
     def __eq__(self, other):
-     try:
-        gestione_errori(other,Data)
-        return self._giorno == other._giorno and self._mese == other._mese
-     except ValueError as e:
-         raise TypeError(f"Errore nel confronto di uguaglianze delle date con errore: {e}") from e
-    
-    #metodo per il confronto di minore tra due date
-    def __lt__(self, other):
-     try:
-        gestione_errori(other,Data)
-        return (self._mese, self._giorno) < (other._mese, other._giorno) # ritorna un valore booleano 
-     except ValueError as e:
+        try:
+            gestione_errori(other, Data)
+            return self._giorno == other._giorno and self._mese == other._mese
+        except ValueError as e:
+            raise TypeError(f"Errore nel confronto di uguaglianze delle date con errore: {e}") from e
 
-         raise TypeError(f"Errore nel confronto di minore tra due date con errore: {e}") from e
-    #metodo per il confronto di maggiore
+    # metodo per il confronto di minore tra due date
+    def __lt__(self, other):
+        try:
+            gestione_errori(other, Data)
+            return (self._mese, self._giorno) < (other._mese, other._giorno)  # ritorna un valore booleano
+        except ValueError as e:
+
+            raise TypeError(f"Errore nel confronto di minore tra due date con errore: {e}") from e
+
+    # metodo per il confronto di maggiore
     def __gt__(self, other):
         try:
-            gestione_errori(other,Data)
-            return (self._mese, self._giorno) > (other._mese, other._giorno) # ritorna un valore booleano
+            gestione_errori(other, Data)
+            return (self._mese, self._giorno) > (other._mese, other._giorno)  # ritorna un valore booleano
         except ValueError as e:
             raise TypeError(f"Errore nel confronto di maggiore tra due date con errore: {e}") from e
-    #metodo per il confronto di minore o uguale tra due date
+
+    # metodo per il confronto di minore o uguale tra due date
     def __le__(self, other):
         try:
-         gestione_errori(other,Data)
-         return (self._mese, self._giorno) <= (other._mese, other._giorno) # ritorna un valore booleano
+            gestione_errori(other, Data)
+            return (self._mese, self._giorno) <= (other._mese, other._giorno)  # ritorna un valore booleano
         except ValueError as e:
             raise TypeError(f"Errore nel confronto di minore o uguale tra due date con errore: {e}") from e
 
     def __str__(self):
-    # Ritorna la stringa "giorno/mese"
-            return f"{self._giorno}/{self._mese}"
+        # Ritorna la stringa "giorno/mese"
+        return f"{self._giorno}/{self._mese}"
 
-    @classmethod  #classmethod ci permette di creare un oggetto Data e a differenza del metodo normale che usa il self(che usa i dati dell'istanza), il classmethod usa cls che è la classe stessa
-    def from_string(cls, s: str): #bisogna passare quindi al metodo i dati per creare un oggetto Data (con giorno e mese che vengono usati dal costruttore)
+    @classmethod  # classmethod ci permette di creare un oggetto Data e a differenza del metodo normale che usa il self(che usa i dati dell'istanza), il classmethod usa cls che è la classe stessa
+    def from_string(cls,
+                    s: str):  # bisogna passare quindi al metodo i dati per creare un oggetto Data (con giorno e mese che vengono usati dal costruttore)
         parti = s.split("/")
         giorno = int(parti[0])
         mese = int(parti[1])
         return cls(giorno, mese)
-    
+
+
 """
 Definire una classe Prenotazione per rappresentare una prenotazione di una stanza di un hotel.
 Le pronotazioni saranno solo all'interno dello stesso anno solare. Ad esempio, non è possibile avere come data di arrivo il 27/12 e come data di partenza il 5/1.
@@ -129,15 +135,19 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
 - Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
 """
-#cercare i metodi per il confronto di uguaglianza profonda o no
+
+
+# cercare i metodi per il confronto di uguaglianza profonda o no
 class Prenotazione:
-    id_counter = 1 #creiamo un contatore per gli id delle prenotazioni che rimane presente nel sistema e poi lo aggiorniamo quando creiamo una nuova prenotazione
-    def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="", numero_persone=0):
-        if id_prenotazione is None: #controlliamo se c'è un id, e in caso contrario creiamo un id automatico
-              self.id_prenotazione = Prenotazione.id_counter
-              Prenotazione.id_counter += 1
+    id_counter = 1  # creiamo un contatore per gli id delle prenotazioni che rimane presente nel sistema e poi lo aggiorniamo quando creiamo una nuova prenotazione
+
+    def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="",
+                 numero_persone=0):
+        if id_prenotazione is None:  # controlliamo se c'è un id, e in caso contrario creiamo un id automatico
+            self.id_prenotazione = Prenotazione.id_counter
+            Prenotazione.id_counter += 1
         else:
-            gestione_errori(id_prenotazione,int,0)
+            gestione_errori(id_prenotazione, int, 0)
             self.id_prenotazione = id_prenotazione
         self.numero_stanza = numero_stanza
         self.data_arrivo = data_arrivo
@@ -145,7 +155,7 @@ class Prenotazione:
         self.nome_cliente = nome_cliente
         self.numero_persone = numero_persone
 
-#- Metodi getter e setter per il numero della stanza, la data di arrivo, la data di partenza, il nome del cliente e il numero di persone.
+    # - Metodi getter e setter per il numero della stanza, la data di arrivo, la data di partenza, il nome del cliente e il numero di persone.
 
     @property
     def id_prenotazione(self):
@@ -153,11 +163,11 @@ class Prenotazione:
 
     @id_prenotazione.setter
     def id_prenotazione(self, value):
-       try:
-        gestione_errori(value,int,0)
-        self._id_prenotazione = value
-       except ValueError as e:
-           raise TypeError(f"Errore con la creazione della prenotazione con errore: {e}") from e
+        try:
+            gestione_errori(value, int, 0)
+            self._id_prenotazione = value
+        except ValueError as e:
+            raise TypeError(f"Errore con la creazione della prenotazione con errore: {e}") from e
 
     @property
     def numero_stanza(self):
@@ -166,11 +176,10 @@ class Prenotazione:
     @numero_stanza.setter
     def numero_stanza(self, value):
         try:
-            gestione_errori(value,int,0)
+            gestione_errori(value, int, 0)
             self._numero_stanza = value
         except TypeError as e:
             raise TypeError(f"errore con la creazione della stanza con errore: {e}") from e
-
 
     @property
     def data_arrivo(self):
@@ -178,29 +187,29 @@ class Prenotazione:
 
     @data_arrivo.setter
     def data_arrivo(self, value):
-       try:
-        gestione_errori(value,Data)
-        self._data_arrivo = value
-       except ValueError as e:
-           raise TypeError(f"Errore con la data di arrivo della prenotazione con errore: {e}") from e
+        try:
+            gestione_errori(value, Data)
+            self._data_arrivo = value
+        except ValueError as e:
+            raise TypeError(f"Errore con la data di arrivo della prenotazione con errore: {e}") from e
 
     @property
     def data_partenza(self):
         return self._data_partenza
 
-    @data_partenza.setter   
+    @data_partenza.setter
     def data_partenza(self, value):
-       try:
-        gestione_errori(value,Data) 
-        if self.data_arrivo is None:
-            raise ValueError("Impostare la data di arrivo prima della data di partenza")
-        if value < self.data_arrivo:
-            if value.mese < self.data_arrivo.mese:
-                raise ValueError("Prenotazioni a cavallo dell'anno non ammesse")
-            raise ValueError("La data di partenza non può essere precedente alla data di arrivo.")
-        self._data_partenza = value
-       except ValueError as e:
-           raise TypeError(f"Errore nella creazione della data di partenza della prenotazione con errore: {e}") from e
+        try:
+            gestione_errori(value, Data)
+            if self.data_arrivo is None:
+                raise ValueError("Impostare la data di arrivo prima della data di partenza")
+            if value < self.data_arrivo:
+                if value.mese < self.data_arrivo.mese:
+                    raise ValueError("Prenotazioni a cavallo dell'anno non ammesse")
+                raise ValueError("La data di partenza non può essere precedente alla data di arrivo.")
+            self._data_partenza = value
+        except ValueError as e:
+            raise TypeError(f"Errore nella creazione della data di partenza della prenotazione con errore: {e}") from e
 
     @property
     def nome_cliente(self):
@@ -208,47 +217,49 @@ class Prenotazione:
 
     @nome_cliente.setter
     def nome_cliente(self, value):
-       try:
-        value = value.strip()
-        gestione_errori(value,str)
-        lunghezza_nome = len(value)
-        if lunghezza_nome > 20 or lunghezza_nome < 3: #controllo lunghezza nome
-            raise ValueError("Il nome deve essere lungo almeno 3 caratteri ed un massimo di 20")
-        self._nome_cliente = value
-       except ValueError as e:
-           raise TypeError(f"Errore nella creazione del nome  con errore: {e}") from e
- 
+        try:
+            value = value.strip()
+            gestione_errori(value, str)
+            lunghezza_nome = len(value)
+            if lunghezza_nome > 20 or lunghezza_nome < 3:  # controllo lunghezza nome
+                raise ValueError("Il nome deve essere lungo almeno 3 caratteri ed un massimo di 20")
+            self._nome_cliente = value
+        except ValueError as e:
+            raise TypeError(f"Errore nella creazione del nome  con errore: {e}") from e
+
     @property
     def numero_persone(self):
         return self._numero_persone
 
     @numero_persone.setter
     def numero_persone(self, value):
-       try:
-        gestione_errori(value,int,0)
-        self._numero_persone = value
-       except ValueError as e:
-           raise TypeError(f"Errore con il numero della prenotazione con errore: {e}") from e
+        try:
+            gestione_errori(value, int, 0)
+            self._numero_persone = value
+        except ValueError as e:
+            raise TypeError(f"Errore con il numero della prenotazione con errore: {e}") from e
 
-    #- Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
+    # - Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
 
-    def __str__(self):
+    def __str__(self):#metodi che fanno l'overriding delle funzioni di stampa, in modo da poter usare la funzione print per stampare gli oggetti
         persone_str = "persona" if self.numero_persone == 1 else "persone"
         return f"Prenotazione {self.id_prenotazione} per stanza {self.numero_stanza} dal {self.data_arrivo.giorno}/{self.data_arrivo.mese} al {self.data_partenza.giorno}/{self.data_partenza.mese} a nome {self.nome_cliente} per {self.numero_persone} {persone_str}"
 
-    #- Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
+    # - Metodo per il confronto di uguaglianza profonda tra due prenotazioni.
     def __eq__(self, other):
         if not isinstance(other, Prenotazione):
             return False
         return (
-            self.numero_stanza == other.numero_stanza and
-            self.data_arrivo == other.data_arrivo and
-            self.data_partenza == other.data_partenza and
-            self.nome_cliente == other.nome_cliente and
-            self.numero_persone == other.numero_persone
+                self.numero_stanza == other.numero_stanza and
+                self.data_arrivo == other.data_arrivo and
+                self.data_partenza == other.data_partenza and
+                self.nome_cliente == other.nome_cliente and
+                self.numero_persone == other.numero_persone
         )
 
-def gestione_errori(data, tipo_dato, min=None, max=None):       #TODO nella fase di testing controllare come viene propagato l'errore con il typerror e value error
+
+def gestione_errori(data, tipo_dato, min=None,      #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
+                    max=None):  # TODO nella fase di testing controllare come viene propagato l'errore con il typerror e value error
     if not isinstance(data, tipo_dato):
         raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
 
@@ -257,6 +268,5 @@ def gestione_errori(data, tipo_dato, min=None, max=None):       #TODO nella fase
             raise ValueError(f"Il valore deve essere maggiore di {min}.")
 
     if max is not None:
-          if data > max:
+        if data > max:
             raise ValueError(f"Il valore deve essere minore a {max}.")
-

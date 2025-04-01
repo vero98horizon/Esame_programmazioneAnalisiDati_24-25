@@ -15,6 +15,7 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo get_tipo_stanza che restituisce il nome della classe. Esempio di utilizzo: s.get_tipo_stanza() restituisce "Stanza"
 """
 class Stanza:
+
     def __init__(self, numero_stanza, posti, prezzo_base):
         self.prezzo_base = None
         self.set_numero_stanza(numero_stanza)

@@ -343,10 +343,13 @@ class Hotel:
                     return False
         return True
 
-    @classmethod
-    def parsing_date(cls, data_arr, data_part):
-        g_arr, m_arr = map(int, data_arr.split('/'))
-        g_part, m_part = map(int, data_part.split('/'))
+    @staticmethod    #metodo statico che invece di essere usato sull'istanza della classe attuale, permette di essere chiamato direttamente
+    def parsing_date( data_arr, data_part):
+        try:
+            g_arr, m_arr = map(int, data_arr.split('/'))
+            g_part, m_part = map(int, data_part.split('/'))
+        except ValueError:
+            raise ValueError("Inserire solo numeri nel formato gg/mm (es: 01/05)")
 
         data_arrivo = Data(g_arr, m_arr)
         data_partenza = Data(g_part, m_part)

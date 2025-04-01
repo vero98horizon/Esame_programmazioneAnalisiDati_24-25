@@ -15,7 +15,7 @@ class myApp:
             self.hotel.carica("hotel_base.txt")
         except Exception as e:
             messagebox.showerror("Errore", f"Impossibile caricare hotel_base.txt: {e}")
-            self.hotel = Hotel()
+            self.hotel = Hotel() #Se il caricamento del file fallisce, crea un hotel vuoto per assicurare che l'applicazione sia comunque utilizzabile
         
         # Configurazione dell'interfaccia
         self.crea_frame()
@@ -77,7 +77,7 @@ class myApp:
             ("Salva hotel", lambda: self.popup_input("Salva", "Nome file:", self.salva_hotel)),
             ("Mostra prenotazioni", self.mostra_tutte_prenotazioni),
             ("Prenotazioni cliente", lambda: self.popup_input("Cerca cliente", "Nome cliente:", self.mostra_prenotazioni_per_cliente)),
-            ("Stato stanze", lambda: self.popup_input("Stato stanze", "Data (gg/mm):", self.mostra_stato_stanza)),
+            ("Stato stanze per data", lambda: self.popup_input("Stato stanze", "Data (gg/mm):", self.mostra_stato_stanza)),
             ("Torna indietro", self.mostra_frame_principale)
         ]
         
@@ -101,11 +101,11 @@ class myApp:
 
     def nascondi_frames(self):
         for frame in [self.main_frame, self.client_frame, self.management_frame]:
-            frame.pack_forget()
+            frame.pack_forget() #invece di distruggere il frame ogni volta lo nascondiamo così da non doverlo ricreare ogni volta
 
     # Metodi per la visualizzazione delle stanze
     def aggiorna_visualizzazioni_stanze(self):
-        """Aggiorna la visualizzazione delle stanze nel canvas"""
+        """Aggiorna la visualizzazione delle stanze ogni volta che viene fatto un qualche cambiamento"""
         self.canvas.delete("all")
         y = 20
         
@@ -115,26 +115,25 @@ class myApp:
         
         for stanza in self.hotel.stanze.values():
             text = f"{stanza.get_tipo_stanza()} {stanza.get_numero_stanza()}"
-            if hasattr(stanza, 'get_extra'):
-                text += f" (Extra: {', '.join(stanza.get_extra())})"
+            if hasattr(stanza, 'get_extra'):#controlliamo se la stanza ha attributi extra con il hasattr che controlla se l'oggetto contiene quell attributo
+                text += f" (Extra:{', '.join(stanza.get_extra())})"
             
             self.canvas.create_text(20, y, text=text, anchor="w", 
                                   font=("Arial", 12))
             y += 20
 
     # Metodi generici per popup
-    def popup_input(self, title, label_text, callback):
-        """Crea un popup generico per input con un solo campo"""
+    def popup_input(self, titolo, testo, gestione_errore):#funzione per creare piu volte un popup passandogli i vari valori
         popup = tk.Toplevel(self.root)
-        popup.title(title)
+        popup.title(titolo)
         popup.geometry("300x150")
         
-        tk.Label(popup, text=label_text).pack(pady=10)
+        tk.Label(popup, text=testo).pack(pady=10)
         entry = tk.Entry(popup)
         entry.pack(pady=5)
         
         tk.Button(popup, text="OK",
-                  command=lambda: self.gestione_errori(callback, entry.get(), popup)).pack(pady=10)
+                  command=lambda: self.gestione_errori(gestione_errore, entry.get(), popup)).pack(pady=10)
 
     def popup_prenotazione(self):
         """Crea il popup specifico per la prenotazione"""
@@ -162,7 +161,7 @@ class myApp:
                   command=lambda: self.prenota_stanza(entrate, popup)).pack(pady=10)
 
     def gestione_errori(self, callback, value, popup):
-        """Esegue una callback e gestisce gli errori"""
+        #gestisce tutti gli errori cosi da non dover scrivere ogni volta il try catch, se non ci sono errori chiude il popup, altrimenti mostra l'errore
         try:
             callback(value)
             popup.destroy()
@@ -249,8 +248,8 @@ class myApp:
     def mostra_stato_stanza(self, data_str):
         """Mostra lo stato delle stanze in una data"""
         try:
-            giorno, mese = map(int, data_str.split('/'))
-            data = Data(giorno, mese)
+
+            data =  Hotel.parsing_date(data_str[0], data_str[1])
             prenotazioni = self.hotel.get_prenotazioni_data(data)
             
             message = f"Stato stanze al {data_str}:\n"
