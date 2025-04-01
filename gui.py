@@ -175,6 +175,7 @@ class myApp:
         try:
 
             data = [e.get() for e in entrate]
+            gestione_errori_data(data[0], int )
             num_stanza = int(data[0])
             arrivo, partenza = Hotel.parsing_date(data[1], data[2])
             nome = data[3]
