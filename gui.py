@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from hotel import Hotel
-from classi import Data
+from classi import Data, gestione_errori_data
+
 
 class myApp:
     def __init__(self, root):
@@ -172,12 +173,14 @@ class myApp:
     def prenota_stanza(self, entrate, popup):
         """Gestisce la prenotazione di una stanza"""
         try:
+
             data = [e.get() for e in entrate]
             num_stanza = int(data[0])
             arrivo, partenza = Hotel.parsing_date(data[1], data[2])
             nome = data[3]
             persone = int(data[4])
-            
+            gestione_errori_data(nome, str)
+            gestione_errori_data(persone, int, 1)
             id_pren = self.hotel.prenota(num_stanza, arrivo, partenza, nome, persone)
             messagebox.showinfo("Successo", f"Prenotazione creata (ID: {id_pren})")
             popup.destroy()

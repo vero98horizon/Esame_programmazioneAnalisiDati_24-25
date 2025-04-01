@@ -1,4 +1,4 @@
-from classi import Data, gestione_errori
+from classi import Data, gestione_errori_data
 """
 Definire una classe Stanza che rappresenta una stanza di un hotel.
 #STATO:
@@ -25,25 +25,25 @@ class Stanza:
         return self.numero_stanza
     
     def set_numero_stanza(self, numero_stanza):
-        gestione_errori(numero_stanza,int,0)
+        gestione_errori_data(numero_stanza, int, 0)
         self.numero_stanza = numero_stanza
 
     def get_posti(self):
         return self.posti
     
     def set_posti(self, posti):
-        gestione_errori(posti,int,0)
+        gestione_errori_data(posti, int, 0)
         self.posti = posti
 
     def get_prezzo_base(self):
         return self.prezzo_base
     
     def set_prezzo_base(self, prezzo_base): 
-        gestione_errori(prezzo_base,float,0)
+        gestione_errori_data(prezzo_base, float, 0)
         self.prezzo_base = prezzo_base
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return self.prezzo_base * numero_notti
     
     def __str__(self):
@@ -102,13 +102,13 @@ class Suite(Stanza):
         return self.extra
     
     def set_extra(self, extra):
-        gestione_errori(extra,list)
+        gestione_errori_data(extra, list)
         for e in extra:
-            gestione_errori(e,str)
+            gestione_errori_data(e, str)
         self.extra = extra
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
@@ -142,7 +142,7 @@ class Doppia(Stanza):
         super().__init__(numero_stanza, 2, prezzo_base)
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return self.prezzo_base * 1.2 * numero_notti
     
     def __str__(self):

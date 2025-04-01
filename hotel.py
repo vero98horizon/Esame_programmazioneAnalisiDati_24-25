@@ -33,7 +33,7 @@ class Hotel:
         return f"Hotel: {len(self.stanze)} stanze ({stanze_str}), {len(self.prenotazioni)} prenotazioni."
             
     def aggiungi_stanza(self, stanza):
-        gestione_errori(stanza,Stanza)
+        gestione_errori_data(stanza, Stanza)
         if stanza.get_numero_stanza() in self.stanze:
             raise ValueError("La stanza è già presente nell'hotel")
         self.stanze[stanza.get_numero_stanza()] = stanza
@@ -53,10 +53,10 @@ class Hotel:
     :raise KeyError: se la stanza non è presente nell'hotel
     """
     def prenota(self, numero_stanza, data_arrivo, data_partenza, nome_cliente, numero_persone):
-        gestione_errori(data_arrivo, Data)
-        gestione_errori(data_partenza, Data)
-        gestione_errori(nome_cliente, str)
-        gestione_errori(numero_persone, int, 0)
+        gestione_errori_data(data_arrivo, Data)
+        gestione_errori_data(data_partenza, Data)
+        gestione_errori_data(nome_cliente, str)
+        gestione_errori_data(numero_persone, int, 0)
         
         if numero_stanza not in self.stanze:
             raise KeyError(f"La stanza {numero_stanza} non esiste")
@@ -97,7 +97,7 @@ class Hotel:
     :raise KeyError: se la stanza non è presente nell'hotel
     """
     def rimuovi_stanza(self, numero_stanza):
-        gestione_errori(numero_stanza, int)
+        gestione_errori_data(numero_stanza, int)
         if numero_stanza not in self.stanze:
             raise KeyError("La stanza non è presente nell'hotel")
         prenotazioni_da_eliminare = [
@@ -116,7 +116,7 @@ class Hotel:
     """
     def get_stanza(self, numero_stanza):
        try:
-        gestione_errori(numero_stanza, int)
+        gestione_errori_data(numero_stanza, int)
 
         if numero_stanza not in self.stanze:
             raise KeyError("La stanza non è presente nell'hotel")
@@ -195,7 +195,7 @@ class Hotel:
     :raise TypeError: se data non è un oggetto di tipo Data
     """
     def get_stanze_libere(self, data):
-        gestione_errori(data, Data)
+        gestione_errori_data(data, Data)
         stanze_libere = []
         for stanza in self.stanze.values():
             # Utilizziamo _stanza_disponibile con l'intervallo [data, data]
@@ -240,7 +240,7 @@ class Hotel:
     :raise TypeError: se data non è un oggetto di tipo Data
     """    
     def get_numero_persone_data(self, data):
-        gestione_errori(data,Data)
+        gestione_errori_data(data, Data)
         data = Data(data.giorno, data.mese)
         persone_presenti = 0
         for prenotazione in self.prenotazioni.values():
@@ -313,7 +313,7 @@ class Hotel:
                     id_pren = int(id_pren)
                     num_stanza = int(num_stanza)
                     persone = int(persone)
-                    data_arrivo,data_partenza= self.parsing_date(data_arr, data_part)
+                    data_arrivo,data_partenza= Hotel.parsing_date(data_arr, data_part)
                     # Parsing delle date
 
                     
@@ -348,10 +348,12 @@ class Hotel:
         try:
             g_arr, m_arr = map(int, data_arr.split('/'))
             g_part, m_part = map(int, data_part.split('/'))
+
+            data_arrivo = Data(g_arr, m_arr)
+            data_partenza = Data(g_part, m_part)
+            return data_arrivo, data_partenza
         except ValueError:
             raise ValueError("Inserire solo numeri nel formato gg/mm (es: 01/05)")
 
-        data_arrivo = Data(g_arr, m_arr)
-        data_partenza = Data(g_part, m_part)
-        return data_arrivo, data_partenza
+
 
