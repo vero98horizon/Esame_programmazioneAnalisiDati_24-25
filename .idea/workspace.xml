@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28433023-4bcc-474d-9e94-da557d1a4b54" name="Changes" comment="Mini fix">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classi.py" beforeDir="false" afterPath="$PROJECT_DIR$/classi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hotel.py" beforeDir="false" afterPath="$PROJECT_DIR$/hotel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stanze.py" beforeDir="false" afterPath="$PROJECT_DIR$/stanze.py" afterDir="false" />
-    </list>
+    <list default="true" id="28433023-4bcc-474d-9e94-da557d1a4b54" name="Changes" comment="Mini fix" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -125,7 +119,7 @@
       <workItem from="1743272006237" duration="12117000" />
       <workItem from="1743416497832" duration="23841000" />
       <workItem from="1743448936020" duration="806000" />
-      <workItem from="1743508536982" duration="10157000" />
+      <workItem from="1743508536982" duration="10483000" />
     </task>
     <task id="LOCAL-00001" summary="classi completato">
       <option name="closed" value="true" />
@@ -159,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743516879946</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Mini fix">
+      <option name="closed" value="true" />
+      <created>1743520639022</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743520639022</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,7 +224,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Esame_programmazioneAnalisiDati_24_25$gui.coverage" NAME="gui Coverage Results" MODIFIED="1743520302827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Esame_programmazioneAnalisiDati_24_25$gui.coverage" NAME="gui Coverage Results" MODIFIED="1743520324211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Esame_programmazioneAnalisiDati_24_25$main.coverage" NAME="main Coverage Results" MODIFIED="1743515175634" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

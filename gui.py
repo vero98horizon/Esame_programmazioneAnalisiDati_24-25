@@ -28,7 +28,7 @@ class myApp:
         self.mostra_frame_principale()
         
         # Bind per uscire con ESC
-        self.root.bind('<Escape>', lambda e: self.root.destroy())
+        self.root.bind('<Escape>', lambda e: self.root.destroy())   #le lambda sono funzioni anonime che non hanno bisogno di essere definite, in questo caso serve per chiudere l'applicazione quando si preme ESC
 
     # Metodi per la configurazione dei frame
     def crea_frame(self):
