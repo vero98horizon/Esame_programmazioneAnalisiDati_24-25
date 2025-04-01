@@ -17,6 +17,8 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 class Stanza:
 
     def __init__(self, numero_stanza, posti, prezzo_base):
+        self.numero_stanza = None
+        self.posti = None
         self.prezzo_base = None
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)

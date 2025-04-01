@@ -256,15 +256,23 @@ class Prenotazione:
                 self.numero_persone == other.numero_persone
         )
 
-def gestione_errori_data(data, tipo_dato, min=None,  #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
-                         max=None):  # TODO nella fase di testing controllare come viene propagato l'errore con il typerror e value error
-    if not isinstance(data, tipo_dato):
-        raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
+def gestione_errori_data(data, tipo_dato, minimo=None, massimo=None):  #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
+                          # TODO nella fase di testing controllare come viene propagato l'errore con il typerror e value error
+                          if tipo_dato is int:
+                              if isinstance(data, str):
+                                  try:
+                                      data = int(data.strip())  # Tentativo di conversione a int
+                                  except ValueError:
+                                      raise TypeError(
+                                          f"Il valore '{data}' deve essere un numero.")
 
-    if min is not None:
-        if data < min:
-            raise ValueError(f"Il valore deve essere maggiore di {min}.")
+                          # Controllo del tipo di dato
+                          if not isinstance(data, tipo_dato):
+                              raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
 
-    if max is not None:
-        if data > max:
-            raise ValueError(f"Il valore deve essere minore a {max}.")
+                          # Controllo dei limiti (solo per int)
+                          if tipo_dato is int:
+                              if minimo is not None and data < minimo:
+                                  raise ValueError(f"Il valore deve essere maggiore o uguale a {minimo}.")
+                              if massimo is not None and data > massimo:
+                                  raise ValueError(f"Il valore deve essere minore o uguale a {massimo}.")
