@@ -39,7 +39,7 @@ class Stanza:
         return self.prezzo_base
     
     def set_prezzo_base(self, prezzo_base): 
-        gestione_errori_data(prezzo_base, float, 0)
+        gestione_errori_data(prezzo_base, float, 1)
         self.prezzo_base = prezzo_base
 
     def calcola_prezzo(self, numero_notti):
@@ -57,7 +57,7 @@ class Stanza:
                 self.prezzo_base == other.prezzo_base)
     
     def get_tipo_stanza(self):
-        return type(self).__name__
+        return "Stanza"
     
 """
 Definire una classe Suite che estende Stanza e rappresenta una suite di un hotel. Una suite è una stanza con almeno 4 posti e con una lista di extra.
@@ -93,7 +93,7 @@ Definire una classe Doppia che estende Stanza e rappresenta una stanza doppia di
 """
 class Suite(Stanza):
     def __init__(self, numero_stanza, posti, extra, prezzo_base):
-        if posti < 4:       #todo manca controllo  se è 0, e servono dei valori di default per extra che deve essere una lista di stringhe
+        if posti < 4:
             raise ValueError("Una suite deve avere almeno 4 posti")
         super().__init__(numero_stanza, posti, prezzo_base)
         self.set_extra(extra)
@@ -120,8 +120,9 @@ class Suite(Stanza):
         return (super().__eq__(other) and 
                 self.extra == other.extra)
     def get_tipo_stanza(self):
-            return super().get_tipo_stanza()
-    
+        return "Suite"
+
+
 class Singola(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
         super().__init__(numero_stanza, 1, prezzo_base)
@@ -135,7 +136,7 @@ class Singola(Stanza):
         return super().__eq__(other)
     
     def get_tipo_stanza(self):
-            return super().get_tipo_stanza()
+            return "Singola"
     
 class Doppia(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
@@ -154,5 +155,5 @@ class Doppia(Stanza):
         return super().__eq__(other)
     
 def get_tipo_stanza(self):
-        return super().get_tipo_stanza()
+        return "Doppia"
 

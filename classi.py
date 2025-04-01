@@ -25,7 +25,6 @@ class Data:
                   12: 31}  # 2025 anno di riferimento non bisestile
 
     def __init__(self, giorno: int, mese: int, anno=2025):
-        _mese = None
         self.mese = mese
         self.giorno = giorno
 
