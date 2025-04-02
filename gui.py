@@ -10,7 +10,7 @@ from classi import Data, gestione_errori_data
  - prenotazione di una stanza;
  - disdire la prenotazione di una stanza;
  - ottenere il prezzo di una prenotazione dato l'indice:
- - mostrare l'hotel ad una certa data inserendo i nomi dei clienti nelle stanze a quella data; #TODO da finire
+ - mostrare l'hotel ad una certa data inserendo i nomi dei clienti nelle stanze a quella data; 
  - ottenere le stanze libere ad una certa data;
  - ottenere le prenotazioni di uno specifico cliente inserendo il nome;
  - ottenere il numero di persone nell'albergo ad una certa data; #TODO da fare
@@ -25,7 +25,7 @@ class myApp:
         self.root = root
         self.root.geometry("800x600")
         self.root.title("Gestione Hotel")
-        
+
         # Inizializza l'hotel
         self.hotel = Hotel()
         try:
@@ -95,6 +95,7 @@ class myApp:
             ("Mostra prenotazioni", self.mostra_tutte_prenotazioni),
             ("Prenotazioni cliente", lambda: self.popup_input("Cerca cliente", "Nome cliente:", self.mostra_prenotazioni_per_cliente)),
             ("Stato stanze per data", lambda: self.popup_input("Stato stanze", "Data (gg/mm):", self.mostra_stato_stanza)),
+            ("Persone nell'albergo per data", lambda :self.popup_input("Persone nell'albergo per data", "Data (gg/mm):", self.persone_per_data)),
             ("Torna indietro", self.mostra_frame_principale)
         ]
         
@@ -278,7 +279,7 @@ class myApp:
         """Mostra lo stato delle stanze in una data"""
         try:
 
-            data, _ = Hotel.parsing_date(data_str, data_str)
+            data = Hotel.parsing_date(data_str, data_str)
             prenotazioni = self.hotel.get_prenotazioni_data(data)
             
             message = f"Stato stanze al {data_str}:\n"
@@ -288,6 +289,20 @@ class myApp:
             messagebox.showinfo("Stato stanze", message)
         except Exception as e:
             messagebox.showerror("Errore", str(e))
+
+    def persone_per_data(self,data_str):
+        """Mostra il numero di persone per una determinata data nell'hotel"""
+        try:
+            data_arrivo, _ = Hotel.parsing_date(data_str, data_str)
+            prenotazioni_numero = self.hotel.get_numero_persone_data(data_arrivo)
+
+
+            messagebox.showinfo("Persone in hotel",
+                                f"Persone presenti alla data {data_str} nell'hotel: {prenotazioni_numero}")
+        except Exception as e:
+            messagebox.showerror("Errore", str(e))
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
