@@ -1,4 +1,4 @@
-from classi import Data, gestione_errori
+from classi import Data, gestione_errori_data
 """
 Definire una classe Stanza che rappresenta una stanza di un hotel.
 #STATO:
@@ -15,7 +15,11 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo get_tipo_stanza che restituisce il nome della classe. Esempio di utilizzo: s.get_tipo_stanza() restituisce "Stanza"
 """
 class Stanza:
+
     def __init__(self, numero_stanza, posti, prezzo_base):
+        self.numero_stanza = None
+        self.posti = None
+        self.prezzo_base = None
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)
         self.set_prezzo_base(prezzo_base)
@@ -23,28 +27,28 @@ class Stanza:
         return self.numero_stanza
     
     def set_numero_stanza(self, numero_stanza):
-        gestione_errori(numero_stanza,int,0)
+        gestione_errori_data(numero_stanza, int, 0)
         self.numero_stanza = numero_stanza
 
     def get_posti(self):
         return self.posti
     
     def set_posti(self, posti):
-        gestione_errori(posti,int,0)
+        gestione_errori_data(posti, int, 0)
         self.posti = posti
 
     def get_prezzo_base(self):
         return self.prezzo_base
     
-    def set_prezzo_base(self, prezzo_base): #todo: usiamo una regex per controllare il tipo di prezzo_base? aggiungere logica per il txt
-        gestione_errori(prezzo_base,float,0)
+    def set_prezzo_base(self, prezzo_base): 
+        gestione_errori_data(prezzo_base, float, 1)
         self.prezzo_base = prezzo_base
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return self.prezzo_base * numero_notti
     
-    def __str__(self):#todo cambiare nome metodo questo e quello dopo
+    def __str__(self):
         return f"{self.numero_stanza}, {self.posti} posti"
     
     def __eq__(self, other):
@@ -91,7 +95,7 @@ Definire una classe Doppia che estende Stanza e rappresenta una stanza doppia di
 """
 class Suite(Stanza):
     def __init__(self, numero_stanza, posti, extra, prezzo_base):
-        if posti < 4:       #todo manca controllo  se è 0, e servono dei valori di default per extra che deve essere una lista di stringhe
+        if posti < 4:
             raise ValueError("Una suite deve avere almeno 4 posti")
         super().__init__(numero_stanza, posti, prezzo_base)
         self.set_extra(extra)
@@ -100,13 +104,13 @@ class Suite(Stanza):
         return self.extra
     
     def set_extra(self, extra):
-        gestione_errori(extra,list)
+        gestione_errori_data(extra, list)
         for e in extra:
-            gestione_errori(e,str)
+            gestione_errori_data(e, str)
         self.extra = extra
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
@@ -118,8 +122,9 @@ class Suite(Stanza):
         return (super().__eq__(other) and 
                 self.extra == other.extra)
     def get_tipo_stanza(self):
-            return super().get_tipo_stanza()
-    
+        return type(self).__name__
+
+
 class Singola(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
         super().__init__(numero_stanza, 1, prezzo_base)
@@ -133,14 +138,15 @@ class Singola(Stanza):
         return super().__eq__(other)
     
     def get_tipo_stanza(self):
-            return super().get_tipo_stanza()
-    
+        return type(self).__name__
+
+
 class Doppia(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
         super().__init__(numero_stanza, 2, prezzo_base)
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori(numero_notti,int,0)
+        gestione_errori_data(numero_notti, int, 0)
         return self.prezzo_base * 1.2 * numero_notti
     
     def __str__(self):
@@ -152,5 +158,5 @@ class Doppia(Stanza):
         return super().__eq__(other)
     
 def get_tipo_stanza(self):
-        return super().get_tipo_stanza()
+        return type(self).__name__
 
