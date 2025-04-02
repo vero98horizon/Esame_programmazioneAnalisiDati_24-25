@@ -72,7 +72,7 @@ class Hotel:
         if numero_persone > stanza.get_posti():
             raise ValueError(f"La stanza {numero_stanza} non può ospitare più di {stanza.posti} persone")
         
-        if not self._stanza_disponibile(numero_stanza, data_arrivo, data_partenza):
+        if not self.stanza_disponibile(numero_stanza, data_arrivo, data_partenza):
             raise ValueError(f"La stanza {numero_stanza} non è disponibile per il periodo richiesto")
         
         id_prenotazione = self.id_prenotazioni
@@ -208,7 +208,7 @@ class Hotel:
         gestione_errori_data(data, Data)
         stanze_libere = []
         for stanza in self.stanze.values():
-            if self._stanza_disponibile(stanza.numero_stanza, data, data):
+            if self.stanza_disponibile(stanza.numero_stanza, data, data):
                 stanze_libere.append(stanza)
         return stanze_libere
 
@@ -285,16 +285,15 @@ class Hotel:
     def carica(self, nomefile):
         with open(nomefile, 'r', encoding='utf-8') as file:
             righe = file.readlines()
-            
             if not righe or righe[0].strip() != "Hotel":
                 raise ValueError("Formato file non valido, manca l'intestazione 'Hotel'")
-            
+
             # Pulisco lo stato attuale dell'hotel
             nuovo_stanze = {}
             nuovo_prenotazioni = {}
             
             # Processo ogni riga
-            for riga in righe[1:]:  # Skippo la prima riga (intestazione)
+            for riga in righe[1:]:  # saltiamo la prima riga
                 riga = riga.strip()
                 if not riga:
                     continue
@@ -332,19 +331,17 @@ class Hotel:
                 else:
                     raise ValueError("Il file contiene una riga con formato non riconosciuto")
             
-            # Se siamo arrivati qui, sovrascriviamo i dati attuali
+            # Se siamo arrivati qui sovrascriviamo i dati attuali
             self.stanze = nuovo_stanze
             self.prenotazioni = nuovo_prenotazioni
             self.id_prenotazioni = max([0] + list(nuovo_prenotazioni.keys())) + 1
 
 
 
-    def _stanza_disponibile(self, numero_stanza, data_arrivo, data_partenza):
+    def stanza_disponibile(self, numero_stanza, data_arrivo, data_partenza):
         """
         Verifica se la stanza (identificata da numero_stanza) è disponibile 
         per l'intervallo [data_arrivo, data_partenza].
-        
-        Restituisce True se la stanza è libera, False altrimenti.
         """
         for pren in self.prenotazioni.values():
             if pren.numero_stanza == numero_stanza:
@@ -368,4 +365,5 @@ class Hotel:
     def controllo_indice(self, indice):
         if indice not in self.prenotazioni:
             raise KeyError("La prenotazione non è presente nell'hotel")
+
 
