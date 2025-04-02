@@ -17,13 +17,10 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 class Stanza:
 
     def __init__(self, numero_stanza, posti, prezzo_base):
-        self.numero_stanza = None
-        self.posti = None
-        self.prezzo_base = None
         self.set_numero_stanza(numero_stanza)
         self.set_posti(posti)
         self.set_prezzo_base(prezzo_base)
-    def get_numero_stanza(self):
+    def get_numero_stanza(self): #uso i classici getter e setter, la differenza sta che non sono delle proprietà della classe ma dei metodi
         return self.numero_stanza
     
     def set_numero_stanza(self, numero_stanza):
@@ -105,12 +102,14 @@ class Suite(Stanza):
     
     def set_extra(self, extra):
         gestione_errori_data(extra, list)
-        for e in extra:
-            gestione_errori_data(e, str)
+        if not extra:
+            raise ValueError("La lista di extra non può essere vuota")
+        for elementi in extra:
+            gestione_errori_data(elementi, str)
         self.extra = extra
 
     def calcola_prezzo(self, numero_notti):
-        gestione_errori_data(numero_notti, int, 0)
+        gestione_errori_data(numero_notti, int, 0,364)
         return (self.prezzo_base * 1.5 + 10 * len(self.extra)) * numero_notti
     
     def __str__(self):
@@ -123,7 +122,6 @@ class Suite(Stanza):
                 self.extra == other.extra)
     def get_tipo_stanza(self):
         return type(self).__name__
-
 
 class Singola(Stanza):
     def __init__(self, numero_stanza, prezzo_base):
@@ -157,6 +155,6 @@ class Doppia(Stanza):
             return False
         return super().__eq__(other)
     
-def get_tipo_stanza(self):
-        return type(self).__name__
+    def get_tipo_stanza(self):
+            return type(self).__name__
 
