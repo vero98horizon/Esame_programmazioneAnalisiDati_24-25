@@ -55,7 +55,7 @@ class Data:
             raise TypeError(f"Errore nella creazione del mese della Data con errore: {e}") from e
 
     # metodo per il calcolo della differenza in giorni tra due date
-    def __sub__(self, other):
+    def __sub__(self, other):#metodi che fanno l'overriding delle funzioni di stampa, in modo da poter usare la funzione print per stampare gli oggetti
         try:
             gestione_errori_data(other, Data)
             # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
@@ -99,7 +99,6 @@ class Data:
             raise TypeError(f"Errore nel confronto di minore o uguale tra due date con errore: {e}") from e
 
     def __str__(self):
-        # Ritorna la stringa "giorno/mese"
         return f"{self._giorno}/{self._mese}"
 
 
@@ -124,10 +123,9 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 """
 
 
-# cercare i metodi per il confronto di uguaglianza profonda o no
+
 class Prenotazione:
     id_counter = 1  # creiamo un contatore per gli id delle prenotazioni che rimane presente nel sistema e poi lo aggiorniamo quando creiamo una nuova prenotazione
-
     def __init__(self, id_prenotazione=None, numero_stanza=0, data_arrivo=None, data_partenza=None, nome_cliente="",
                  numero_persone=0):
         if id_prenotazione is None:  # controlliamo se c'è un id, e in caso contrario creiamo un id automatico
@@ -228,7 +226,7 @@ class Prenotazione:
 
     # - Metodo per la rappresentazione in forma di stringa della prenotazione. Rispettando il formato di esempio: "Prenotazione 1 per stanza 101 da 1/1 a 5/1 a nome Mario Rossi per 1 persone"
 
-    def __str__(self):#metodi che fanno l'overriding delle funzioni di stampa, in modo da poter usare la funzione print per stampare gli oggetti
+    def __str__(self):
         persone_str = "persona" if self.numero_persone == 1 else "persone"
         return f"Prenotazione {self.id_prenotazione} per stanza {self.numero_stanza} dal {self.data_arrivo.giorno}/{self.data_arrivo.mese} al {self.data_partenza.giorno}/{self.data_partenza.mese} a nome {self.nome_cliente} per {self.numero_persone} {persone_str}"
 
@@ -247,16 +245,16 @@ class Prenotazione:
 def gestione_errori_data(data, tipo_dato, minimo=None, massimo=None):  #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
 
                           if tipo_dato is int:
-                              if isinstance(data, str):
+                              if isinstance(data, str):  #ho dovuto fare questo tipo di controllo perchè nella GUI quando viene messo in input un numero di base lo vede come str, se nel controllo metto int(), mi viene mandato l'errore dal tentativo di conversione. in questo modo risolvo questo problema
                                   try:
-                                      data = int(data.strip())  # Tentativo di conversione a int
+                                      data = int(data.strip())
                                   except ValueError:
                                       raise TypeError(
                                           f"Il valore '{data}' deve essere un numero.")
 
                           # Controllo del tipo di dato
                           if not isinstance(data, tipo_dato):
-                              raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
+                              raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")#il __name__ fornisce il nome della classe, in questo caso int, str o altro.
 
                           # Controllo dei limiti (solo per int)
                           if tipo_dato is int:
