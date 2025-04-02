@@ -7,8 +7,8 @@ Definire una classe Data per rappresentare una specifica data all'interno di un 
 Ogni volta che si modifica una di queste variabili di istanza, devono essere controllati tipo e valori e sollevate opportune eccezioni ValueError o TypeError se i parametri non sono validi.
 
 #METODI:
-- Costruttore che prende in input giorno, mese e anno e inizializza le variabili di istanza. Esempio di utilizzo: d = Data(1, 1) FATTO
-- Metodi getter e setter per giorno e mese. FATTO
+- Costruttore che prende in input giorno, mese e anno e inizializza le variabili di istanza. Esempio di utilizzo: d = Data(1, 1)
+- Metodi getter e setter per giorno e mese.
 - Metodo per la rappresentazione in forma di stringa della data, rispettando il formato di esempio: "1/1"
 - Metodo per il calcolo della differenza in giorni tra due date. Esempio di utilizzo: d2 - d1 dove d1 = Data(1, 1), d2 = Data(1, 2), risultato -> 31. Nota, d2 - d1 deve essere uguale a d1 - d2.
 - Metodo per il confronto di uguaglianza tra due date.
@@ -17,30 +17,25 @@ Ogni volta che si modifica una di queste variabili di istanza, devono essere con
 - Metodo per il confronto di minore o uguale tra due date. Esempio di utilizzo: d1 <= d2
 """
 
-
-# chiedere perchè se il costruttore prende in input giorno, mese e anno, ma poi si inizializzano solo giorno e mese e non l'anno
-# dire se va bene il controllo del giorno e mese nel costruttore o se va fatto in un metodo setter
 class Data:
     mappa_mesi = {1: 31, 2: 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30,
                   12: 31}  # 2025 anno di riferimento non bisestile
 
     def __init__(self, giorno: int, mese: int, anno=2025):
-        _mese = None
+        self._mese = None # Inizializziamo prima mese per evitare errori nel setter di giorno
         self.mese = mese
         self.giorno = giorno
 
     # metodi getter e setter per giorno e mese
-
     @property  # property ci permette di definire un metodo che può essere usato come un attributo
     def giorno(self):#qui ad esempio possiamo chiamare semplicemente data.giorno e ci chiama questo metodo, a differenza dei metodi getter e setter normali dove serve mettere Data.Getgiorno()
-        return self._giorno
+        return self._giorno #siccome si una la property dobbiamo fare sef._giorno e non self.giorno perchè se facessimo come nel secondo caso verrebbe chiamata la funzione ricorsivamente entrando in un loop.
 
     @giorno.setter  #possiamo usare il setter con lo stesso nome del getter e verrà selezionata una rispetto all'altra in base a quello che viene indicato poi tra le parentesi, per il setter dovremo mettere il valore che vogliamo assegnare, mentre per il getter non si mette nulla
     def giorno(self, valore):
         try:
             if self._mese is None:  # controllo che il mese sia stato impostato
                 raise ValueError("Impossibile impostare il giorno: il mese non è ancora stato definito.")
-            # Recupero il numero massimo di giorni nel mese
             giorni_max = self.mappa_mesi.get(self._mese)
             gestione_errori_data(valore, int, 0, giorni_max + 1)
             self._giorno = valore
@@ -64,9 +59,8 @@ class Data:
         try:
             gestione_errori_data(other, Data)
             # Calcola i giorni dall'inizio dell'anno per self e other usando la mappa_mesi
-            giorni_self = sum(Data.mappa_mesi[m] for m in range(1,
-                                                                self._mese)) + self._giorno  # usiamo la funzione Sum per sommare i giorni dei mesi precedenti e aggiungere il giorno corrente
-            giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other._mese)) + other._giorno
+            giorni_self = sum(Data.mappa_mesi[m] for m in range(1,  self.mese)) + self.giorno  # usiamo la funzione Sum per sommare i giorni dei mesi precedenti e aggiungere il giorno corrente
+            giorni_other = sum(Data.mappa_mesi[m] for m in range(1, other.mese)) + other.giorno
             return abs(giorni_self - giorni_other)
         except ValueError as e:
             raise ValueError(f"Errore nel calcolo della differenza delle date con errore: {e}") from e
@@ -75,7 +69,7 @@ class Data:
     def __eq__(self, other):
         try:
             gestione_errori_data(other, Data)
-            return self._giorno == other._giorno and self._mese == other._mese
+            return self._giorno == other.giorno and self._mese == other.mese
         except ValueError as e:
             raise TypeError(f"Errore nel confronto di uguaglianze delle date con errore: {e}") from e
 
@@ -83,7 +77,7 @@ class Data:
     def __lt__(self, other):
         try:
             gestione_errori_data(other, Data)
-            return (self._mese, self._giorno) < (other._mese, other._giorno)  # ritorna un valore booleano
+            return (self._mese, self._giorno) < (other.mese, other.giorno)  # ritorna un valore booleano
         except ValueError as e:
 
             raise TypeError(f"Errore nel confronto di minore tra due date con errore: {e}") from e
@@ -92,7 +86,7 @@ class Data:
     def __gt__(self, other):
         try:
             gestione_errori_data(other, Data)
-            return (self._mese, self._giorno) > (other._mese, other._giorno)  # ritorna un valore booleano
+            return (self.mese, self.giorno) > (other.mese, other.giorno)  # ritorna un valore booleano
         except ValueError as e:
             raise TypeError(f"Errore nel confronto di maggiore tra due date con errore: {e}") from e
 
@@ -108,13 +102,6 @@ class Data:
         # Ritorna la stringa "giorno/mese"
         return f"{self._giorno}/{self._mese}"
 
-    @classmethod  # classmethod ci permette di creare un oggetto Data e a differenza del metodo normale che usa il self(che usa i dati dell'istanza), il classmethod usa cls che è la classe stessa
-    def from_string(cls,
-                    s: str):  # bisogna passare quindi al metodo i dati per creare un oggetto Data (con giorno e mese che vengono usati dal costruttore)
-        parti = s.split("/")
-        giorno = int(parti[0])
-        mese = int(parti[1])
-        return cls(giorno, mese)
 
 
 """
