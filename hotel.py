@@ -194,10 +194,10 @@ class Hotel:
     """
     def get_prenotazioni_cliente(self, cliente):
         gestione_errori_data(cliente, str)
-        cliente=[prenotazione for prenotazione in self.prenotazioni.values() if prenotazione.nome_cliente == cliente]
-        if not cliente:
+        prenotazioni_cliente = [prenotazione for prenotazione in self.prenotazioni.values() if prenotazione.nome_cliente == cliente]
+        if not prenotazioni_cliente:
             raise ValueError("Nessuna prenotazione per questo cliente")
-        return cliente
+        return prenotazioni_cliente
     """
     Restituisce la lista delle stanze libere nell'hotel in una data specifica.
     :param data: data da cercare
@@ -224,17 +224,10 @@ class Hotel:
         tipo_stanza = tipo_stanza.capitalize()
         return [prenotazione for prenotazione in self.prenotazioni.values() 
                 if self.stanze[prenotazione.numero_stanza].get_tipo_stanza() == tipo_stanza]
-        """
-    Restituisce la lista delle stanze dell'hotel sopra un prezzo specifico fra due date.
-    :param numero_notti: numero di notti da considerare
-    :param prezzo: prezzo da confrontare
-    :return: la lista delle stanze dell'hotel sopra un prezzo specifico
-    """
+
     def get_stanze_sopra_prezzo(self, numero_notti, prezzo):
         gestione_errori_data(numero_notti, int)
-
         prezzo = float(prezzo)
-
         if prezzo <= 1:
             raise ValueError("Il prezzo deve essere maggiore di 1")
         stanze_sopra_prezzo = []
@@ -345,8 +338,10 @@ class Hotel:
         """
         for pren in self.prenotazioni.values():
             if pren.numero_stanza == numero_stanza:
-                # Se l'intervallo della prenotazione si sovrappone a quello richiesto:
-                if not (data_partenza < pren.data_arrivo or data_arrivo > pren.data_partenza):
+                # Verifica sovrapposizione: due intervalli si sovrappongono se:
+                # data_arrivo < pren.data_partenza AND data_partenza > pren.data_arrivo
+                # Ma permettiamo prenotazioni consecutive: una può finire quando l'altra inizia
+                if data_arrivo < pren.data_partenza and data_partenza > pren.data_arrivo:
                     return False
         return True
 
@@ -365,5 +360,3 @@ class Hotel:
     def controllo_indice(self, indice):
         if indice not in self.prenotazioni:
             raise KeyError("La prenotazione non è presente nell'hotel")
-
-

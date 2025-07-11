@@ -38,7 +38,12 @@ class Stanza:
         return self.prezzo_base
     
     def set_prezzo_base(self, prezzo_base): 
-        gestione_errori_data(prezzo_base, float, 1)
+        if isinstance(prezzo_base, (int, str)):
+            try:
+                prezzo_base = float(prezzo_base)
+            except ValueError:
+                raise TypeError("Il prezzo deve essere un numero valido")
+        gestione_errori_data(prezzo_base, float, 1.0)
         self.prezzo_base = prezzo_base
 
     def calcola_prezzo(self, numero_notti):
@@ -157,4 +162,3 @@ class Doppia(Stanza):
     
     def get_tipo_stanza(self):
             return type(self).__name__
-

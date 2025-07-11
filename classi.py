@@ -242,23 +242,33 @@ class Prenotazione:
                 self.numero_persone == other.numero_persone
         )
 
-def gestione_errori_data(data, tipo_dato, minimo=None, massimo=None):  #funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe
+def gestione_errori_data(data, tipo_dato, minimo=None, massimo=None):
+    """Funzione per gestire gli errori in maniera generica, in modo da non dover ripetere il codice per ogni classe"""
 
-                          if tipo_dato is int:
-                              if isinstance(data, str):  #ho dovuto fare questo tipo di controllo perchè nella GUI quando viene messo in input un numero di base lo vede come str, se nel controllo metto int(), mi viene mandato l'errore dal tentativo di conversione. in questo modo risolvo questo problema
-                                  try:
-                                      data = int(data.strip())
-                                  except ValueError:
-                                      raise TypeError(
-                                          f"Il valore '{data}' deve essere un numero.")
+    if tipo_dato is int:
+        if isinstance(data, str):  # conversione da stringa a int per GUI
+            try:
+                data = int(data.strip())
+            except ValueError:
+                raise TypeError(f"Il valore '{data}' deve essere un numero.")
 
-                          # Controllo del tipo di dato
-                          if not isinstance(data, tipo_dato):
-                              raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")#il __name__ fornisce il nome della classe, in questo caso int, str o altro.
+    # Controllo del tipo di dato
+    if not isinstance(data, tipo_dato):
+        raise TypeError(f"Il valore deve essere di tipo {tipo_dato.__name__}.")
 
-                          # Controllo dei limiti (solo per int)
-                          if tipo_dato is int:
-                              if minimo is not None and data < minimo:
-                                  raise ValueError(f"Il valore deve essere maggiore o uguale a {minimo}.")
-                              if massimo is not None and data > massimo:
-                                  raise ValueError(f"Il valore deve essere minore o uguale a {massimo}.")
+    # Controllo dei limiti (solo per int e float)
+    if tipo_dato is int:
+        if minimo is not None and data <= minimo:
+            raise ValueError(f"Il valore deve essere maggiore di {minimo}.")
+        if massimo is not None and data >= massimo:
+            raise ValueError(f"Il valore deve essere minore di {massimo}.")
+
+    if tipo_dato is float:
+        if minimo is not None and data <= minimo:
+            raise ValueError(f"Il prezzo deve essere maggiore di {minimo}.")
+
+    # Controllo per stringhe non vuote
+    if tipo_dato is str and len(data.strip()) == 0:
+        raise ValueError("La stringa non può essere vuota.")
+
+    return data
