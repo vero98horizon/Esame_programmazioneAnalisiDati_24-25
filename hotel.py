@@ -155,7 +155,7 @@ class Hotel:
     :return: la prenotazione con indice
     :raise KeyError: se la prenotazione non è presente nell'hotel
     """
-    def get_prenotazione_per_indice(self, indice):
+    def get_prenotazione(self, indice):
         gestione_errori_data(indice, int)
         self.controllo_indice( indice)
         return self.prenotazioni[indice]
